@@ -1,6 +1,7 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.AI;
+using Cysharp.Threading.Tasks;
 
 public class Employee : MonoBehaviour
 {
@@ -19,29 +20,38 @@ public class Employee : MonoBehaviour
         taskManager = TaskManager.Instance;
     }
 
-    public void AssignTask(IdleTask task)
+    public async void AssignTask(IdleTask task)
     {
         isAvailable = false;
+        navMeshAgent.SetDestination(TaskManager.Instance.employeeCounter.position);
         currentTask = task;
-        Debug.Log($"{employeeName} assigned to {task.serviceType} for {task.customer.customerName}");
-
+        await UniTask.WaitUntil(() => navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance && (navMeshAgent.hasPath || navMeshAgent.velocity.sqrMagnitude == 0f));
         // Move to task location (simulate with a destination)
         MoveToTaskStation();
     }
 
-    private void MoveToTaskStation()
+    private async void MoveToTaskStation()
     {
-        // For simplicity, use a random position for task station (replace this with actual task station position)
-        Vector3 taskStationPosition = currentTask.GetTaskLocation().transform.position;
+        TaskStation taskStation = currentTask.GetTaskLocation();
+        Vector3 taskStationPosition = taskStation.doTaskPosition.position;
         navMeshAgent.SetDestination(taskStationPosition);
-    }
-
-    void Update()
-    {
-        if (!isAvailable && !navMeshAgent.pathPending && navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance)
+        await UniTask.WaitUntil(() => navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance && (navMeshAgent.hasPath || navMeshAgent.velocity.sqrMagnitude == 0f));
+        
+        Vector3 startRotation = transform.forward;
+        float rotationSpeed = 90f;
+        Vector3 desiredRotation = taskStation.transform.position - transform.position;
+        desiredRotation.y = 0;
+        float rotationAngle = Vector3.Angle(transform.forward, desiredRotation);
+        float rotationDuration = rotationAngle / rotationSpeed;
+        float elapsedTime = 0f;
+        while (Vector3.Angle(transform.forward, desiredRotation) > 2)
         {
-            PerformTask();
+            elapsedTime += Time.deltaTime;
+            transform.forward = Vector3.Lerp(startRotation, desiredRotation, elapsedTime);
+            await UniTask.DelayFrame(1);
         }
+        PerformTask();
+
     }
 
     private void PerformTask()

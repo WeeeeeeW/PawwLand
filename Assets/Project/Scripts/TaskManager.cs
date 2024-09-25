@@ -1,8 +1,12 @@
+using Sirenix.OdinInspector;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class TaskManager : Singleton<TaskManager>
 {
+    public Transform customerCounter, employeeCounter, door;
+    [SerializeField] private GameObject[] customers; 
+
     public Queue<IdleTask> taskQueue = new Queue<IdleTask>();
     public List<Employee> employees;
     public Dictionary<ServiceType, List<TaskStation>> stations;
@@ -46,5 +50,11 @@ public class TaskManager : Singleton<TaskManager>
             }
         }
         return null;
+    }
+
+    [Button]
+    void SpawnCustomer()
+    {
+        Instantiate(customers[Random.Range(0, customers.Length)], door.position, Quaternion.identity);
     }
 }
