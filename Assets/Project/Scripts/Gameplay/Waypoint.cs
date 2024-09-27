@@ -12,5 +12,12 @@ public class Waypoint : MonoBehaviour
             if(employee.destination == transform)
                 employee.ReachDestination();
         }
+
+        var customer = other.GetComponent<Customer>();
+        if (customer != null)
+        {
+            if (customer.destination == transform)
+                customer.ReachDestination();
+        }
     }
 }

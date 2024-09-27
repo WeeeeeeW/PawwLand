@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class TaskManager : Singleton<TaskManager>
 {
-    public Transform customerCounter, employeeCounter, door;
+    public Transform customerCounter, cageDoor, cageDropoff, door;
     [SerializeField] private GameObject[] customers; 
 
     public Queue<IdleTask> taskQueue = new Queue<IdleTask>();
+    public Manager manager;
     public List<Employee> employees;
     public Dictionary<ServiceType, List<TaskStation>> stations;
     public void CreateTask(Customer customer, ServiceType serviceType)

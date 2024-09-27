@@ -1,4 +1,7 @@
 using Sirenix.OdinInspector;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -9,44 +12,61 @@ public class Customer : MonoBehaviour
     public Pet pet;
     private TaskManager taskManager;
     private NavMeshAgent navMeshAgent;
-    bool assignedTask = false;
+
+    public Transform destination;
+    private Queue<Action> actionQueue;
 
     void Start()
     {
         // Assign the task manager
         taskManager = TaskManager.Instance;
         navMeshAgent = GetComponent<NavMeshAgent>();
+        actionQueue = new Queue<Action>();
 
         MoveToCounter();
     }
 
-    [Button]
-    public void MoveToCounter()
+    private void MoveToCounter()
     {
         // Request a task based on service type
         //Debug.Log($"{customerName} is coming in with {pet.petName}.");
-        navMeshAgent.SetDestination(TaskManager.Instance.customerCounter.position);
-        assignedTask = false;
+        SetTarget(TaskManager.Instance.customerCounter);
+
+        actionQueue.Enqueue(() => StartCoroutine(RegisterTask()));
     }
 
-    void Update()
+    private IEnumerator RegisterTask()
     {
-        // Check if customer has reached the counter
-        if (!navMeshAgent.pathPending && navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance)
-        {
-            RegisterTask();
-        }
-    }
-
-    void RegisterTask()
-    {
-        if (assignedTask)
-            return;
+        yield return new WaitForSeconds(1f);
         Debug.Log($"{customerName} requests {requestedService}");
         taskManager.CreateTask(this, requestedService);
-        assignedTask = true;
+        SetTarget(TaskManager.Instance.door);
+        actionQueue.Enqueue(() => WaitPetFinish());
     }
 
+    void WaitPetFinish()
+    {
+
+    }
+
+    void SetTarget(Transform target)
+    {
+        navMeshAgent.isStopped = false;
+        navMeshAgent.updateRotation = true;
+        destination = target;
+        navMeshAgent.SetDestination(destination.position);
+    }
+    public void ReachDestination()
+    {
+        if (actionQueue.Count > 0)
+        {
+            navMeshAgent.isStopped = true;
+            navMeshAgent.updateRotation = false;
+            navMeshAgent.velocity = Vector3.zero;
+            //navMeshAgent.SetDestination(transform.position);
+            actionQueue.Dequeue().Invoke();
+        }
+    }
     public void Leave()
     {
         // Customer leaves after service is done

@@ -14,7 +14,6 @@ public class Employee : MonoBehaviour
     private NavMeshAgent navMeshAgent;
 
     public Transform destination;
-    public bool reachedDestination;
     private Queue<Action> actionQueue;
     void Awake()
     {
@@ -29,7 +28,7 @@ public class Employee : MonoBehaviour
     public void AssignTask(IdleTask task)
     {
         isAvailable = false;
-        SetTarget(TaskManager.Instance.employeeCounter);
+        SetTarget(TaskManager.Instance.cageDoor);
         currentTask = task;
         // Move to task location (simulate with a destination)
         actionQueue.Enqueue(() => MoveToTaskStation());
@@ -79,7 +78,6 @@ public class Employee : MonoBehaviour
     {
         navMeshAgent.isStopped = false;
         navMeshAgent.updateRotation = true;
-        reachedDestination = false;
         destination = target;
         navMeshAgent.SetDestination(destination.position);
     }
