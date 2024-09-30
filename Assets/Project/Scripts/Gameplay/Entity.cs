@@ -1,3 +1,4 @@
+using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +7,7 @@ using UnityEngine.AI;
 public abstract class Entity : MonoBehaviour
 {
     protected NavMeshAgent navMeshAgent;
-    public Transform destination;
+    [ReadOnly] public Transform destination;
     protected Queue<Action> actionQueue;
 
     protected virtual void SetTarget(Transform target)
@@ -20,7 +21,7 @@ public abstract class Entity : MonoBehaviour
     {
         if (actionQueue.Count > 0)
         {
-            navMeshAgent.isStopped = true;
+            //navMeshAgent.isStopped = true;
             navMeshAgent.updateRotation = false;
             navMeshAgent.velocity = Vector3.zero;
             //navMeshAgent.SetDestination(transform.position);

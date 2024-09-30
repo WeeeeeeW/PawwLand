@@ -11,14 +11,14 @@ public class Customer : Entity
     public ServiceType requestedService;
     public Pet pet;
     private TaskManager taskManager;
-
+    [SerializeField] Transform petHolder; 
     void Start()
     {
         // Assign the task manager
         taskManager = TaskManager.Instance;
         navMeshAgent = GetComponent<NavMeshAgent>();
         actionQueue = new Queue<Action>();
-
+        pet.AssignToOwner(this);
         MoveToCounter();
     }
 
@@ -33,17 +33,35 @@ public class Customer : Entity
 
     private IEnumerator RegisterTask()
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(.2f);
         Debug.Log($"{customerName} requests {requestedService}");
-        TaskManager.Instance.manager.AssignTask(requestedService, pet);
-        //taskManager.CreateTask(this, requestedService);
+        taskManager.manager.AssignTask(requestedService, pet);
         SetTarget(TaskManager.Instance.door);
-        actionQueue.Enqueue(() => WaitPetFinish());
+        //actionQueue.Enqueue(() => WaitPetFinish());
     }
 
-    void WaitPetFinish()
+    public void ProceedPayment()
     {
+        SetTarget(taskManager.customerCounter);
+        actionQueue.Enqueue(() => StartCoroutine(Pay()));
+    }
 
+    IEnumerator Pay()
+    {
+        yield return new WaitForSeconds(.2f);
+        //Tip logic here also
+        Debug.Log($"{customerName} paid <color=green>$xxx</color>");
+        SetTarget(taskManager.petzone.door);
+        actionQueue.Enqueue(() => StartCoroutine(PickupPet()));
+    }
+
+    IEnumerator PickupPet()
+    {
+        yield return new WaitForSeconds(.2f);
+        pet.transform.parent = petHolder;
+        pet.transform.localPosition = Vector3.zero;
+        SetTarget(TaskManager.Instance.door);
+        actionQueue.Enqueue(() => Destroy(gameObject));
     }
 
     public void Leave()

@@ -8,10 +8,11 @@ using UnityEngine.AI;
 public class Employee : Entity
 {
     public string employeeName;
-    public bool isAvailable = true;
-    private IdleTask currentTask;
+    [HideInInspector] public bool isAvailable = true;
+    [SerializeField][ReadOnly] private IdleTask currentTask;
     private TaskManager taskManager;
-
+    [SerializeField] Transform petHolder;
+    [SerializeField] float efficiency = 1f;
     void Awake()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
@@ -25,16 +26,26 @@ public class Employee : Entity
     public void AssignTask(IdleTask task)
     {
         isAvailable = false;
-        SetTarget(TaskManager.Instance.cageDoor);
+        SetTarget(TaskManager.Instance.petzone.door);
+
         currentTask = task;
-        // Move to task location (simulate with a destination)
-        actionQueue.Enqueue(() => MoveToTaskStation());
+        actionQueue.Enqueue(() => StartCoroutine(PickupPet(task.pet)));
+        if(Vector3.Distance(transform.position, TaskManager.Instance.petzone.door.position) < 1f)
+            ReachDestination();
+    }
+
+    public IEnumerator PickupPet(Pet _pet)
+    {
+        yield return new WaitForSeconds(.2f);
+        _pet.transform.parent = petHolder;
+        _pet.transform.localPosition = Vector3.zero;
+        MoveToTaskStation();
     }
 
     private void MoveToTaskStation()
     {
         TaskStation taskStation = currentTask.GetTaskLocation();
-        SetTarget(taskStation.doTaskPosition);
+        SetTarget(taskStation.employeeTaskPosition);
         actionQueue.Enqueue(() => StartCoroutine(PerformTask(taskStation)));
 
         //PerformTask();
@@ -59,15 +70,35 @@ public class Employee : Entity
                 transform.forward = Vector3.Lerp(startRotation, desiredRotation, elapsedTime / rotationDuration);
                 yield return null;
             }
+
+
             Debug.Log($"{employeeName} starts performing {currentTask.serviceType} for {currentTask.customer.customerName}");
-            currentTask.PerformTask(this);
+            //Place Pet on Task Pos
+            currentTask.pet.transform.parent = _taskStation.taskPosition;
+            currentTask.pet.transform.localPosition = Vector3.zero;
+            yield return new WaitForSeconds(_taskStation.taskDuration);
+            //Pickup Pet
+            currentTask.pet.transform.parent = petHolder;
+            currentTask.pet.transform.localPosition = Vector3.zero;
+            SetTarget(taskManager.petzone.door);
+            actionQueue.Enqueue(() => StartCoroutine(ReturnPet()));
         }
+    }
+
+    IEnumerator ReturnPet()
+    {
+        yield return new WaitForSeconds(.2f);
+        currentTask.pet.transform.parent = taskManager.petzone.transform;
+        currentTask.pet.transform.localPosition = Vector3.zero;
+        OnTaskComplete();
     }
 
     public void OnTaskComplete()
     {
         isAvailable = true;
+        currentTask.customer?.ProceedPayment();
         Debug.Log($"{employeeName} completed the task and is now available.");
+        currentTask = null;
         taskManager.AssignTaskFromQueue();
     }
 }

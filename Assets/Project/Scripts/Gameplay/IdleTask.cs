@@ -1,23 +1,21 @@
+using System;
 using UnityEngine;
 
+[Serializable]
 public class IdleTask
 {
     public Customer customer;
+    public Pet pet;
     public ServiceType serviceType;
     public bool isCompleted = false;
 
-    public IdleTask(Customer customer, ServiceType serviceType)
+    public IdleTask(Customer customer, Pet pet, ServiceType serviceType)
     {
         this.customer = customer;
+        this.pet = pet;
         this.serviceType = serviceType;
     }
 
-    public void PerformTask(Employee employee)
-    {
-        Debug.Log($"{employee.name} is performing {serviceType} for {customer.customerName}");
-        // Simulate task completion
-        CompleteTask(employee);
-    }
 
     private void CompleteTask(Employee employee)
     {
