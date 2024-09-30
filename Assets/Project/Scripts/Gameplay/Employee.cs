@@ -5,16 +5,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Employee : MonoBehaviour
+public class Employee : Entity
 {
     public string employeeName;
     public bool isAvailable = true;
     private IdleTask currentTask;
     private TaskManager taskManager;
-    private NavMeshAgent navMeshAgent;
 
-    public Transform destination;
-    private Queue<Action> actionQueue;
     void Awake()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
@@ -72,25 +69,5 @@ public class Employee : MonoBehaviour
         isAvailable = true;
         Debug.Log($"{employeeName} completed the task and is now available.");
         taskManager.AssignTaskFromQueue();
-    }
-
-    void SetTarget(Transform target)
-    {
-        navMeshAgent.isStopped = false;
-        navMeshAgent.updateRotation = true;
-        destination = target;
-        navMeshAgent.SetDestination(destination.position);
-    }
-
-    public void ReachDestination()
-    {
-        if (actionQueue.Count > 0)
-        {
-            navMeshAgent.isStopped = true;
-            navMeshAgent.updateRotation = false;
-            navMeshAgent.velocity = Vector3.zero;
-            //navMeshAgent.SetDestination(transform.position);
-            actionQueue.Dequeue().Invoke();
-        }
     }
 }

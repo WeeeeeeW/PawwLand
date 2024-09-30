@@ -1158,7 +1158,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0686009422157694498aaa6972347f80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  petHolder: {fileID: 0}
+  destination: {fileID: 0}
+  petHolder: {fileID: 1134211635}
+  service: 0
 --- !u!1 &494360968
 GameObject:
   m_ObjectHideFlags: 0
@@ -2398,9 +2400,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d54ffe2b0e92f24db4d5c73a1f085e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  destination: {fileID: 0}
   employeeName: A
   isAvailable: 1
-  destination: {fileID: 0}
 --- !u!136 &1550620399
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -2934,7 +2936,7 @@ MonoBehaviour:
   door: {fileID: 194684201}
   customers:
   - {fileID: 7772160733040539946, guid: cd695e22500fff94ea857eb74c01674c, type: 3}
-  manager: {fileID: 0}
+  manager: {fileID: 467561900}
   employees: []
 --- !u!4 &1924458989
 Transform:

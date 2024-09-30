@@ -5,16 +5,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Customer : MonoBehaviour
+public class Customer : Entity
 {
     public string customerName;
     public ServiceType requestedService;
     public Pet pet;
     private TaskManager taskManager;
-    private NavMeshAgent navMeshAgent;
-
-    public Transform destination;
-    private Queue<Action> actionQueue;
 
     void Start()
     {
@@ -39,7 +35,8 @@ public class Customer : MonoBehaviour
     {
         yield return new WaitForSeconds(1f);
         Debug.Log($"{customerName} requests {requestedService}");
-        taskManager.CreateTask(this, requestedService);
+        TaskManager.Instance.manager.AssignTask(requestedService, pet);
+        //taskManager.CreateTask(this, requestedService);
         SetTarget(TaskManager.Instance.door);
         actionQueue.Enqueue(() => WaitPetFinish());
     }
@@ -49,24 +46,6 @@ public class Customer : MonoBehaviour
 
     }
 
-    void SetTarget(Transform target)
-    {
-        navMeshAgent.isStopped = false;
-        navMeshAgent.updateRotation = true;
-        destination = target;
-        navMeshAgent.SetDestination(destination.position);
-    }
-    public void ReachDestination()
-    {
-        if (actionQueue.Count > 0)
-        {
-            navMeshAgent.isStopped = true;
-            navMeshAgent.updateRotation = false;
-            navMeshAgent.velocity = Vector3.zero;
-            //navMeshAgent.SetDestination(transform.position);
-            actionQueue.Dequeue().Invoke();
-        }
-    }
     public void Leave()
     {
         // Customer leaves after service is done
