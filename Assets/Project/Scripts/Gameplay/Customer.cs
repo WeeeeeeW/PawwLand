@@ -11,7 +11,7 @@ public class Customer : Entity
     public ServiceType requestedService;
     public Pet pet;
     private TaskManager taskManager;
-    [SerializeField] Transform petHolder; 
+    [SerializeField] Transform petHolder;
     void Start()
     {
         // Assign the task manager
@@ -26,7 +26,7 @@ public class Customer : Entity
     {
         // Request a task based on service type
         //Debug.Log($"{customerName} is coming in with {pet.petName}.");
-        SetTarget(TaskManager.Instance.customerCounter);
+        SetTarget(TaskManager.Instance.counter.customerIn);
 
         actionQueue.Enqueue(() => StartCoroutine(RegisterTask()));
     }
@@ -36,13 +36,14 @@ public class Customer : Entity
         yield return new WaitForSeconds(.2f);
         Debug.Log($"{customerName} requests {requestedService}");
         taskManager.manager.AssignTask(requestedService, pet);
-        SetTarget(TaskManager.Instance.door);
+        SetTarget(TaskManager.Instance.counter.customerOut);
+        actionQueue.Enqueue(() => SetTarget(TaskManager.Instance.door));
         //actionQueue.Enqueue(() => WaitPetFinish());
     }
 
     public void ProceedPayment()
     {
-        SetTarget(taskManager.customerCounter);
+        SetTarget(taskManager.counter.customerIn);
         actionQueue.Enqueue(() => StartCoroutine(Pay()));
     }
 

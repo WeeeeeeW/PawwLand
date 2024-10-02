@@ -11,6 +11,7 @@ public class Manager : Entity
     [SerializeField] private Transform petHolder;
     [SerializeField][ReadOnly] Counter counter;
     private TaskManager taskManager;
+    public bool isAvailable;
     private void Awake()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
@@ -27,6 +28,7 @@ public class Manager : Entity
 
     public void AssignTask(ServiceType _service, Pet _pet)
     {
+        isAvailable = false;
         _pet.transform.parent = petHolder;
         _pet.transform.localPosition = Vector3.zero;
         SetTarget(taskManager.petzone.dropoff);
@@ -57,6 +59,7 @@ public class Manager : Entity
             transform.forward = Vector3.Lerp(startRotation, desiredRotation, elapsedTime / rotationDuration);
             yield return null;
         }
+        isAvailable = false;
     }
 
 }

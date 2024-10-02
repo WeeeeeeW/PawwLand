@@ -5,6 +5,7 @@ using UnityEngine;
 public class Counter : MonoBehaviour
 {
     [SerializeField] Manager[] managers;
+    public Transform customerOut, customerIn;
     // Start is called before the first frame update
     void Start()
     {

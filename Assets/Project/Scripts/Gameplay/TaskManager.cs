@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class TaskManager : Singleton<TaskManager>
 {
-    public Transform customerCounter, employeeCounter, door;
+    public Transform employeeCounter, door;
+    public Counter counter;
     [SerializeField] private GameObject[] customers;
 
     public Queue<IdleTask> taskQueue = new Queue<IdleTask>();
