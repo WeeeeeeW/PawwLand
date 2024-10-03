@@ -25,17 +25,24 @@ public class Customer : Entity
     private void MoveToCounter()
     {
         // Request a task based on service type
-        //Debug.Log($"{customerName} is coming in with {pet.petName}.");
-        SetTarget(TaskManager.Instance.counter.customerIn);
+        Debug.Log($"{customerName} is coming in with {pet.petName}.");
+        SetTarget(TaskManager.Instance.counter.queueStart);
 
-        actionQueue.Enqueue(() => StartCoroutine(RegisterTask()));
+        actionQueue.Enqueue(() =>
+        {
+            SubscribeToCounter(TaskManager.Instance.counter);
+            TaskManager.Instance.counter.QueueUpCustomer(this);
+            actionQueue.Enqueue(() => RequestService());
+            actionQueue.Enqueue(() => Exit());
+        });
+        //actionQueue.Enqueue(() => StartCoroutine(RegisterTask()));
     }
-
-    private IEnumerator RegisterTask()
+    private void RequestService()
     {
-        yield return new WaitForSeconds(.2f);
-        Debug.Log($"{customerName} requests {requestedService}");
-        taskManager.manager.AssignTask(requestedService, pet);
+        StartCoroutine(TaskManager.Instance.counter.ServeCustomer(this));
+    }
+    private void Exit()
+    {
         SetTarget(TaskManager.Instance.counter.customerOut);
         actionQueue.Enqueue(() => SetTarget(TaskManager.Instance.door));
         //actionQueue.Enqueue(() => WaitPetFinish());
@@ -70,5 +77,30 @@ public class Customer : Entity
         // Customer leaves after service is done
         Debug.Log($"{customerName} is leaving the spa.");
         Destroy(gameObject);  // For now, we'll just destroy the customer object.
+    }
+
+    public void SetQueueTarget(Vector3 _target)
+    {
+        Debug.Log(_target);
+        destination = null;
+        navMeshAgent.updateRotation = true;
+        navMeshAgent.SetDestination(_target);
+    }
+    public void SetQueueTarget(Transform _target)
+    {
+        SetTarget(_target);
+    }
+    public void AddActionQueue(Action _action)
+    {
+        actionQueue.Enqueue(_action);
+    }
+    public void InvokeQueue()
+    {
+        actionQueue.Dequeue().Invoke();
+    }
+
+    public void SubscribeToCounter(Counter _counter)
+    {
+        _counter.callNextCustomer += () => actionQueue.Dequeue().Invoke();
     }
 }

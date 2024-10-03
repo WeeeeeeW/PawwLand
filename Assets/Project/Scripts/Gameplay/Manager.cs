@@ -12,6 +12,7 @@ public class Manager : Entity
     [SerializeField][ReadOnly] Counter counter;
     private TaskManager taskManager;
     public bool isAvailable;
+    public float efficiency = 1;
     private void Awake()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
@@ -20,6 +21,7 @@ public class Manager : Entity
     private void Start()
     {
         taskManager = TaskManager.Instance;
+        //isAvailable = true;
     }
     public void AssignToCounter(Counter _counter)
     {
