@@ -27,6 +27,7 @@ public class Counter : MonoBehaviour
             var x = i - 1;
             _customer.AddActionQueue(() => _customer.SetQueueTarget(customerIn.transform.position + customerIn.forward * x * 1.5f));
         }
+        queueStart.transform.position = customerIn.transform.position + customerIn.forward * customerQueue.Count * 1.5f;
         _customer.AddActionQueue(() => _customer.SetQueueTarget(customerIn));
         _customer.InvokeQueue();
     }
@@ -35,6 +36,7 @@ public class Counter : MonoBehaviour
         yield return new WaitUntil(() => manager.isAvailable);
         yield return new WaitForSeconds(.2f / manager.efficiency);
         Customer _customer = customerQueue.Dequeue();
+        queueStart.transform.position = customerIn.transform.position + customerIn.forward * customerQueue.Count * 1.5f;
         Debug.Log($"{_customer.customerName} requests {_customer.requestedService}");
         manager.AssignTask(_customer.requestedService, _customer.pet);
         callNextCustomer?.Invoke();
