@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public abstract class Entity : MonoBehaviour
+public abstract class Entity : SerializedMonoBehaviour
 {
     protected NavMeshAgent navMeshAgent;
     [ReadOnly] public Transform destination;
-    protected Queue<Action> actionQueue;
+    [SerializeField] protected Queue<Action> actionQueue;
 
     protected virtual void SetTarget(Transform target)
     {

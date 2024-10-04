@@ -96,7 +96,7 @@ public class Employee : Entity
     public void OnTaskComplete()
     {
         isAvailable = true;
-        currentTask.customer?.ProceedPayment();
+        //currentTask.customer?.ProceedPayment();
         Debug.Log($"{employeeName} completed the task and is now available.");
         currentTask = null;
         taskManager.AssignTaskFromQueue();

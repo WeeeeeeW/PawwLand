@@ -61,7 +61,7 @@ public class Manager : Entity
             transform.forward = Vector3.Lerp(startRotation, desiredRotation, elapsedTime / rotationDuration);
             yield return null;
         }
-        isAvailable = false;
+        isAvailable = true;
     }
 
 }

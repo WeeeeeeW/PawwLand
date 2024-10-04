@@ -1,4 +1,5 @@
 using DG.Tweening.Core.Easing;
+using Sirenix.OdinInspector;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -24,19 +25,19 @@ public class Counter : MonoBehaviour
         for (int i = customerQueue.Count; i > 1; i--)
         {
             var x = i - 1;
-            Debug.Log(customerIn.transform.position);
             _customer.AddActionQueue(() => _customer.SetQueueTarget(customerIn.transform.position + customerIn.forward * x * 1.5f));
         }
         _customer.AddActionQueue(() => _customer.SetQueueTarget(customerIn));
         _customer.InvokeQueue();
     }
-    public IEnumerator ServeCustomer(Customer _customer)
+    public IEnumerator ServeCustomer()
     {
         yield return new WaitUntil(() => manager.isAvailable);
         yield return new WaitForSeconds(.2f / manager.efficiency);
+        Customer _customer = customerQueue.Dequeue();
         Debug.Log($"{_customer.customerName} requests {_customer.requestedService}");
         manager.AssignTask(_customer.requestedService, _customer.pet);
-        customerQueue.Dequeue();
         callNextCustomer?.Invoke();
-    }
+        _customer.UnsubscribeToCounter(this);
+    } 
 }

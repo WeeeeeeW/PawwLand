@@ -39,7 +39,7 @@ public class Customer : Entity
     }
     private void RequestService()
     {
-        StartCoroutine(TaskManager.Instance.counter.ServeCustomer(this));
+        StartCoroutine(TaskManager.Instance.counter.ServeCustomer());
     }
     private void Exit()
     {
@@ -81,7 +81,6 @@ public class Customer : Entity
 
     public void SetQueueTarget(Vector3 _target)
     {
-        Debug.Log(_target);
         destination = null;
         navMeshAgent.updateRotation = true;
         navMeshAgent.SetDestination(_target);
@@ -99,8 +98,14 @@ public class Customer : Entity
         actionQueue.Dequeue().Invoke();
     }
 
+    Action _actionRef;
     public void SubscribeToCounter(Counter _counter)
     {
-        _counter.callNextCustomer += () => actionQueue.Dequeue().Invoke();
+        _actionRef = () => actionQueue.Dequeue().Invoke();
+        _counter.callNextCustomer += _actionRef;
+    }
+    public void UnsubscribeToCounter(Counter _counter)
+    {
+        _counter.callNextCustomer -= _actionRef;
     }
 }
