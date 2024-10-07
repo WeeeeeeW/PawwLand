@@ -25,7 +25,7 @@ public class IdleTask
         employee.OnTaskComplete();
     }
 
-    public TaskStation GetTaskLocation()
+    public BaseTaskStation GetTaskLocation()
     {
         return TaskManager.Instance.stations[serviceType][0];
     }

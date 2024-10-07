@@ -13,6 +13,15 @@ public class TaskManager : Singleton<TaskManager>
     public List<Employee> employees;
     public Dictionary<ServiceType, List<TaskStation>> stations;
     public Petzone petzone;
+    private void Awake()
+    {
+        base.Awake();
+        var allStations = FindObjectsOfType<TaskStation>();
+        foreach (var station in allStations)
+        {
+            stations[station.serviceType].Add(station);
+        }
+    }
     public void CreateTask(Customer customer, Pet pet, ServiceType serviceType)
     {
         IdleTask newTask = new IdleTask(customer, pet, serviceType);
@@ -47,7 +56,6 @@ public class TaskManager : Singleton<TaskManager>
             AssignTask(nextTask);
         }
     }
-
     private Employee GetAvailableEmployee()
     {
         foreach (Employee employee in employees)

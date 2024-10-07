@@ -716,6 +716,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5515b0a05859dc408ebd639bdefceb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serviceType: 1
+  employeeTaskPosition: {fileID: 0}
+  taskPosition: {fileID: 0}
+  taskDuration: 0
   manager: {fileID: 467561900}
   customerOut: {fileID: 999174417}
   customerIn: {fileID: 1976332326}
@@ -1279,6 +1283,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0686009422157694498aaa6972347f80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: actionQueue
+      Entry: 6
+      Data: 
   destination: {fileID: 0}
   petHolder: {fileID: 1134211635}
   counter: {fileID: 0}
@@ -2463,17 +2479,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 212068309591390753, guid: 93c2be67051f6f240bf9e00288642de9, type: 3}
   m_PrefabInstance: {fileID: 2158346835154671702}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1251185313 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8955402687830098407, guid: 93c2be67051f6f240bf9e00288642de9, type: 3}
-  m_PrefabInstance: {fileID: 2158346835154671702}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dcc233ab98863974a9dd6c5e2239a436, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1275335569
 GameObject:
   m_ObjectHideFlags: 0
@@ -2845,6 +2850,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d54ffe2b0e92f24db4d5c73a1f085e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: actionQueue
+      Entry: 6
+      Data: 
   destination: {fileID: 0}
   employeeName: A
   isAvailable: 1
@@ -2900,17 +2917,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5475459498298673369, guid: 6ac2bea30d0f04d48a9043fb6f29dcd3, type: 3}
   m_PrefabInstance: {fileID: 2496691989548754977}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1555561331 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5895836041058494127, guid: 6ac2bea30d0f04d48a9043fb6f29dcd3, type: 3}
-  m_PrefabInstance: {fileID: 2496691989548754977}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dcc233ab98863974a9dd6c5e2239a436, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1592231018
 GameObject:
   m_ObjectHideFlags: 0
@@ -3288,6 +3294,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 869044380804450557, guid: cd695e22500fff94ea857eb74c01674c, type: 3}
+      propertyPath: serializationData.Prefab
+      value: 
+      objectReference: {fileID: 869044380804450557, guid: cd695e22500fff94ea857eb74c01674c, type: 3}
     - target: {fileID: 5878982782885685813, guid: cd695e22500fff94ea857eb74c01674c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 4.39
@@ -3369,9 +3379,7 @@ MonoBehaviour:
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
-    ReferencedUnityObjects:
-    - {fileID: 1555561331}
-    - {fileID: 1251185313}
+    ReferencedUnityObjects: []
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -3414,16 +3422,13 @@ MonoBehaviour:
       Data: 
     - Name: $k
       Entry: 3
-      Data: 0
+      Data: 2
     - Name: $v
       Entry: 7
       Data: 3|System.Collections.Generic.List`1[[TaskStation, Assembly-CSharp]],
         mscorlib
     - Name: 
       Entry: 12
-      Data: 1
-    - Name: 
-      Entry: 10
       Data: 0
     - Name: 
       Entry: 13
@@ -3439,17 +3444,14 @@ MonoBehaviour:
       Data: 
     - Name: $k
       Entry: 3
-      Data: 1
+      Data: 3
     - Name: $v
       Entry: 7
       Data: 4|System.Collections.Generic.List`1[[TaskStation, Assembly-CSharp]],
         mscorlib
     - Name: 
       Entry: 12
-      Data: 1
-    - Name: 
-      Entry: 10
-      Data: 1
+      Data: 0
     - Name: 
       Entry: 13
       Data: 

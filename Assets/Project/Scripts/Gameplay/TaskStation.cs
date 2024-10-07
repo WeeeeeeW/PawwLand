@@ -1,10 +1,16 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class TaskStation : MonoBehaviour
+public class TaskStation : BaseTaskStation
 {
-    //public string stationName;
-    public ServiceType serviceType;
-    public Transform employeeTaskPosition;
-    public Transform taskPosition;
-    public float taskDuration;
+    public override IEnumerator AdvanceQueue()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void QueueUp(Entity _entity)
+    {
+        throw new System.NotImplementedException();
+    }
 }

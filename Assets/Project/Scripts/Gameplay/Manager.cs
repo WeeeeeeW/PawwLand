@@ -21,7 +21,7 @@ public class Manager : Entity
     private void Start()
     {
         taskManager = TaskManager.Instance;
-        //isAvailable = true;
+        isAvailable = true;
     }
     public void AssignToCounter(Counter _counter)
     {

@@ -44,7 +44,7 @@ public class Employee : Entity
 
     private void MoveToTaskStation()
     {
-        TaskStation taskStation = currentTask.GetTaskLocation();
+        BaseTaskStation taskStation = currentTask.GetTaskLocation();
         SetTarget(taskStation.employeeTaskPosition);
         actionQueue.Enqueue(() => StartCoroutine(PerformTask(taskStation)));
 
@@ -52,7 +52,7 @@ public class Employee : Entity
 
     }
 
-    private IEnumerator PerformTask(TaskStation _taskStation)
+    private IEnumerator PerformTask(BaseTaskStation _taskStation)
     {
         if (currentTask != null)
         {
@@ -96,7 +96,7 @@ public class Employee : Entity
     public void OnTaskComplete()
     {
         isAvailable = true;
-        //currentTask.customer?.ProceedPayment();
+        currentTask.customer?.ProceedPayment();
         Debug.Log($"{employeeName} completed the task and is now available.");
         currentTask = null;
         taskManager.AssignTaskFromQueue();

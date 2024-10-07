@@ -12,6 +12,7 @@ public class Customer : Entity
     public Pet pet;
     private TaskManager taskManager;
     [SerializeField] Transform petHolder;
+    private Counter assignedCounter;
     void Start()
     {
         // Assign the task manager
@@ -25,13 +26,14 @@ public class Customer : Entity
     private void MoveToCounter()
     {
         // Request a task based on service type
+        assignedCounter = TaskManager.Instance.counter;
         Debug.Log($"{customerName} is coming in with {pet.petName}.");
-        SetTarget(TaskManager.Instance.counter.queueStart);
+        SetTarget(assignedCounter.queueStart);
 
         actionQueue.Enqueue(() =>
         {
-            SubscribeToCounter(TaskManager.Instance.counter);
-            TaskManager.Instance.counter.QueueUpCustomer(this);
+            SubscribeToCounter(assignedCounter);
+            assignedCounter.QueueUp(this);
             actionQueue.Enqueue(() => RequestService());
             actionQueue.Enqueue(() => Exit());
         });
@@ -39,26 +41,37 @@ public class Customer : Entity
     }
     private void RequestService()
     {
-        StartCoroutine(TaskManager.Instance.counter.ServeCustomer());
+        StartCoroutine(assignedCounter.AdvanceQueue());
     }
     private void Exit()
     {
-        SetTarget(TaskManager.Instance.counter.customerOut);
+        SetTarget(assignedCounter.customerOut);
         actionQueue.Enqueue(() => SetTarget(TaskManager.Instance.door));
         //actionQueue.Enqueue(() => WaitPetFinish());
     }
 
     public void ProceedPayment()
     {
-        SetTarget(taskManager.counter.customerIn);
-        actionQueue.Enqueue(() => StartCoroutine(Pay()));
+        gameObject.SetActive(true);
+        SetTarget(assignedCounter.queueStart);
+        actionQueue.Enqueue(() =>
+        {
+            SubscribeToCounter(assignedCounter);
+            assignedCounter.QueueUp(this);
+            actionQueue.Enqueue(() =>
+            {
+                assignedCounter.AdvanceQueue();
+                StartCoroutine(Pay());
+            });
+        });
     }
 
     IEnumerator Pay()
     {
-        yield return new WaitForSeconds(.2f);
+        yield return new WaitUntil(() => assignedCounter.manager.isAvailable);
         //Tip logic here also
         Debug.Log($"{customerName} paid <color=green>$xxx</color>");
+        UnsubscribeToCounter(assignedCounter);
         SetTarget(taskManager.petzone.door);
         actionQueue.Enqueue(() => StartCoroutine(PickupPet()));
     }

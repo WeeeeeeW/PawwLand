@@ -6,9 +6,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Counter : MonoBehaviour
+public class Counter : BaseTaskStation
 {
-    [SerializeField] Manager manager;
+    [SerializeField]public Manager manager;
     public Transform customerOut, customerIn, queueStart;
     Queue<Customer> customerQueue;
     public Action callNextCustomer;
@@ -18,9 +18,21 @@ public class Counter : MonoBehaviour
         manager.AssignToCounter(this);
         customerQueue = new Queue<Customer>();
     }
-    public void QueueUpCustomer(Customer _customer)
+
+    public override IEnumerator AdvanceQueue()
     {
-        //_customer.SetQueueTarget(customerIn.transform.position + customerIn.forward * customerQueue.Count);
+        yield return new WaitUntil(() => manager.isAvailable);
+        yield return new WaitForSeconds(taskDuration / manager.efficiency);
+        Customer _customer = customerQueue.Dequeue();
+        Debug.Log($"{_customer.customerName} requests {_customer.requestedService}");
+        manager.AssignTask(_customer.requestedService, _customer.pet);
+        callNextCustomer?.Invoke();
+        _customer.UnsubscribeToCounter(this);
+    }
+
+    public override void QueueUp(Entity _entity)
+    {
+        Customer _customer = _entity.GetComponent<Customer>();
         customerQueue.Enqueue(_customer);
         for (int i = customerQueue.Count; i > 1; i--)
         {
@@ -30,14 +42,4 @@ public class Counter : MonoBehaviour
         _customer.AddActionQueue(() => _customer.SetQueueTarget(customerIn));
         _customer.InvokeQueue();
     }
-    public IEnumerator ServeCustomer()
-    {
-        yield return new WaitUntil(() => manager.isAvailable);
-        yield return new WaitForSeconds(.2f / manager.efficiency);
-        Customer _customer = customerQueue.Dequeue();
-        Debug.Log($"{_customer.customerName} requests {_customer.requestedService}");
-        manager.AssignTask(_customer.requestedService, _customer.pet);
-        callNextCustomer?.Invoke();
-        _customer.UnsubscribeToCounter(this);
-    } 
 }

@@ -103,9 +103,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f0d029118d7fa64788c99dd30e73d98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: actionQueue
+      Entry: 6
+      Data: 
   destination: {fileID: 0}
   customerName: Customer 1
-  requestedService: 0
+  requestedService: 2
   pet: {fileID: 9080060007169666891}
   petHolder: {fileID: 5172203638026176985}
 --- !u!195 &-2941613744302561910
@@ -129,7 +141,7 @@ NavMeshAgent:
   m_Height: 2
   m_BaseOffset: -0.08
   m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 1
 --- !u!1 &8990332351155185705
 GameObject:
   m_ObjectHideFlags: 0
