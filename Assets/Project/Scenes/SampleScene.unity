@@ -736,7 +736,7 @@ GameObject:
   - component: {fileID: 294306470}
   - component: {fileID: 294306469}
   - component: {fileID: 294306468}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1418,7 +1418,7 @@ GameObject:
   - component: {fileID: 625412375}
   - component: {fileID: 625412374}
   - component: {fileID: 625412373}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1523,7 +1523,7 @@ GameObject:
   - component: {fileID: 701397805}
   - component: {fileID: 701397804}
   - component: {fileID: 701397803}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1734,7 +1734,7 @@ GameObject:
   - component: {fileID: 748525764}
   - component: {fileID: 748525763}
   - component: {fileID: 748525762}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2245,7 +2245,7 @@ GameObject:
   - component: {fileID: 1120547950}
   - component: {fileID: 1120547949}
   - component: {fileID: 1120547948}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: CounterQueue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2771,7 +2771,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1535795095}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Walls
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3010,6 +3010,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1806388700}
   - component: {fileID: 1806388701}
+  - component: {fileID: 1806388703}
+  - component: {fileID: 1806388702}
   m_Layer: 0
   m_Name: Map
   m_TagString: Untagged
@@ -3073,8 +3075,90 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.1
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: 9142ab6302813b642bc2532e9a4498b7, type: 2}
+  m_NavMeshData: {fileID: 0}
   m_BuildHeightMesh: 1
+--- !u!114 &1806388702
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1806388699}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78396926cbbfc4ac3b48fc5fc34a87d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 1073741824
+  data:
+    dataString: UEsDBBQAAAgIAAA4IewFG/mMtAIAAPYFAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFtVE1T4kAQ/SvUnFcroCLubRcQ96BS4paHxcM46ZAphpnUfAho8d/tngwk4IpVSb1+3f36K59MaleB8MZOrMzvTQ7sZ4fRO/vRaYx3sOELo2fyA/acF5n7kkg8cp64lwbxLrk5swJvpfilF4rIGYJBy8LY1ThfwNA47xAuuHKAJms8eWuEPjtskxy26flBz84O3wRoD7Zhdc9v6G+Q3fyXHrRQfFVBTrIbr95lYvdqmsaCEoPEC6OUdEkN89sqVjvklQtYCxJyybG6qIP4JchF6Slc2/mxKBz4JMny7UhabFIdlf02dedW3C1rXe9chSigN4ia6qD33+z9i2gurFnd7fN2M8rhSymWT3wruPOt1rbh0bHwoNdcLfmbgpcS9IOZWBN0jkZvA7kGB71RK9ShtmEJYtnwaq0nYKi+D7PbTGcXq9/MPFSHOrLzywb968DNlInNTyHJkpAbCgkWB/cH64m741IiREkj+j/zRXvJkuFWWufRlPQklLhTnBDkoAWkvp8RQZO8NxMsxWLjqJWaEfzQWA0RTgIr0Fz57RQj+tMVOLG1dJ1YbjndW1KXbPszOnGJcMPPshPT1KwPw7a4vC5u9P7t3ysNwZVmfQ+ufAxeSd3qNhkesMFDo3W9ue1m7t1mwRZctNw8bHywMOKex2woBxcsb7tiL6OHDkrRLscCoiIsgP5fqb8lx7wqwuzB6Hh5R88ofxFkfnwhTIgs611n16JfXF31L97OeoP+VXEhLmEg8DfgLJ6Q1NhurqZ1v9KUcLt0U4vGc9l/DTsTy6t4tLnl64n8WJnW5KUuzExYAP1YRzgUCxaT4MclH+cSy5yB91LHvWSfc6aMWEI+bxzmsbPjjbf8CK3ku/GEzNkwfgTnjODDSeLuvktYU/b5QRYGA4Wzg/xZKljxikzZju2+AFBLAwQUAAAICAAAOCHsA/B3sWsAAAB3AAAACQAkAG1ldGEuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAatWKkstKs7Mz1OyUjDVM9Qz0lFQSi9KLMgoBgoYgjilmSkgdrRScrKBgZG5gXmyWZqpqZlxkq6RhZlpmnGySapFMhBaJCrFAtWXVBak+iXmpkL0BCSWZKRl5qVk5qXruRdlpriDjFaKrQUAUEsBAi0AFAAACAgAADgh7AUb+Yy0AgAA9gUAAAsAJAAAAAAAAAAAAAAAAAAAAGdyYXBoMC5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0BUEsBAi0AFAAACAgAADgh7APwd7FrAAAAdwAAAAkAJAAAAAAAAAAAAAAAAQMAAG1ldGEuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAVBLBQYAAAAAAgACALgAAAC3AwAAAAA=
+    file_cachedStartup: {fileID: 0}
+    cacheStartup: 0
+  showNavGraphs: 1
+  showUnwalkableNodes: 1
+  debugMode: 0
+  debugFloor: 0
+  debugRoof: 1
+  manualDebugFloorRoof: 0
+  showSearchTree: 0
+  unwalkableNodeDebugSize: 0.3
+  logPathResults: 1
+  maxNearestNodeDistance: 100
+  scanOnStartup: 1
+  fullGetNearestSearch: 0
+  prioritizeGraphs: 0
+  prioritizeGraphsLimit: 1
+  colorSettings:
+    _SolidColor: {r: 0.11764706, g: 0.4, b: 0.7882353, a: 0.9}
+    _UnwalkableNode: {r: 1, g: 0, b: 0, a: 0.5}
+    _BoundsHandles: {r: 0.29, g: 0.454, b: 0.741, a: 0.9}
+    _ConnectionLowLerp: {r: 0, g: 1, b: 0, a: 0.5}
+    _ConnectionHighLerp: {r: 1, g: 0, b: 0, a: 0.5}
+    _MeshEdgeColor: {r: 0, g: 0, b: 0, a: 0.5}
+    _AreaColors: []
+  tagNames: []
+  heuristic: 2
+  heuristicScale: 1
+  threadCount: 1
+  maxFrameTime: 10
+  batchGraphUpdates: 0
+  graphUpdateBatchingInterval: 0.2
+  navmeshUpdates:
+    updateInterval: 0
+  euclideanEmbedding:
+    mode: 0
+    seed: 0
+    pivotPointRoot: {fileID: 0}
+    spreadOutCount: 1
+  showGraphs: 1
+--- !u!114 &1806388703
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1806388699}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 373b52eb9bf8c40f785bb6947a1aee66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 1073741824
+  drawGizmos: 1
+  detailedGizmos: 0
+  startEndModifier:
+    addPoints: 0
+    exactStartPoint: 3
+    exactEndPoint: 3
+    useRaycasting: 0
+    mask:
+      serializedVersion: 2
+      m_Bits: 4294967295
+    useGraphRaycasting: 0
+  traversableTags: -1
+  tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  graphMask:
+    value: -1
 --- !u!1 &1806932583
 GameObject:
   m_ObjectHideFlags: 0
@@ -3087,7 +3171,7 @@ GameObject:
   - component: {fileID: 1806932587}
   - component: {fileID: 1806932586}
   - component: {fileID: 1806932585}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
