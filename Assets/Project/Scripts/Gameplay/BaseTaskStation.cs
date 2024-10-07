@@ -9,8 +9,8 @@ public abstract class BaseTaskStation : MonoBehaviour
     public Transform employeeTaskPosition;
     public Transform taskPosition;
     public float taskDuration;
-    Queue<Entity> entityQueue;
+    protected Queue<Entity> entityQueue;
     public abstract void QueueUp(Entity _entity);
-    public abstract IEnumerator AdvanceQueue();
+    public abstract IEnumerator AdvanceQueue(bool requestService);
 
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TaskStation : BaseTaskStation
 {
-    public override IEnumerator AdvanceQueue()
+    public override IEnumerator AdvanceQueue(bool requestService)
     {
         throw new System.NotImplementedException();
     }

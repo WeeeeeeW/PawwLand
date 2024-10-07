@@ -41,7 +41,7 @@ public class Customer : Entity
     }
     private void RequestService()
     {
-        StartCoroutine(assignedCounter.AdvanceQueue());
+        StartCoroutine(assignedCounter.AdvanceQueue(true));
     }
     private void Exit()
     {
@@ -58,17 +58,12 @@ public class Customer : Entity
         {
             SubscribeToCounter(assignedCounter);
             assignedCounter.QueueUp(this);
-            actionQueue.Enqueue(() =>
-            {
-                assignedCounter.AdvanceQueue();
-                StartCoroutine(Pay());
-            });
+            actionQueue.Enqueue(() => StartCoroutine(assignedCounter.AdvanceQueue(false)));
+            actionQueue.Enqueue(() => Pay());
         });
     }
-
-    IEnumerator Pay()
+    void Pay()
     {
-        yield return new WaitUntil(() => assignedCounter.manager.isAvailable);
         //Tip logic here also
         Debug.Log($"{customerName} paid <color=green>$xxx</color>");
         UnsubscribeToCounter(assignedCounter);

@@ -13,7 +13,7 @@ public class TaskManager : Singleton<TaskManager>
     public List<Employee> employees;
     public Dictionary<ServiceType, List<TaskStation>> stations;
     public Petzone petzone;
-    private void Awake()
+    private new void Awake()
     {
         base.Awake();
         var allStations = FindObjectsOfType<TaskStation>();

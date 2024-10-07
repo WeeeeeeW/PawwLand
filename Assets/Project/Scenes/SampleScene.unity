@@ -486,7 +486,7 @@ GameObject:
   - component: {fileID: 216619675}
   - component: {fileID: 216619677}
   - component: {fileID: 216619676}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -502,7 +502,7 @@ Transform:
   m_GameObject: {fileID: 216619674}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.08, z: 0}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -719,7 +719,7 @@ MonoBehaviour:
   serviceType: 1
   employeeTaskPosition: {fileID: 0}
   taskPosition: {fileID: 0}
-  taskDuration: 0
+  taskDuration: 1
   manager: {fileID: 467561900}
   customerOut: {fileID: 999174417}
   customerIn: {fileID: 1976332326}
@@ -1202,7 +1202,7 @@ GameObject:
   - component: {fileID: 467561895}
   - component: {fileID: 467561899}
   - component: {fileID: 467561900}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1424,7 +1424,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &625412372
 Transform:
   m_ObjectHideFlags: 0
@@ -2211,7 +2211,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1051579016}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: PetHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2347,7 +2347,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1134211635}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: PetHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2584,7 +2584,7 @@ GameObject:
   - component: {fileID: 1373540736}
   - component: {fileID: 1373540738}
   - component: {fileID: 1373540737}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2809,7 +2809,7 @@ GameObject:
   - component: {fileID: 1550620399}
   - component: {fileID: 1550620398}
   - component: {fileID: 1550620397}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Employee
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2928,7 +2928,7 @@ GameObject:
   - component: {fileID: 1592231019}
   - component: {fileID: 1592231021}
   - component: {fileID: 1592231020}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3062,7 +3062,7 @@ MonoBehaviour:
   m_Center: {x: 0, y: 2, z: 0}
   m_LayerMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 55
   m_UseGeometry: 0
   m_DefaultArea: 0
   m_GenerateLinks: 0
@@ -3071,9 +3071,9 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.16666667
+  m_VoxelSize: 0.1
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: b2ad1fad18b7ae443890c3c48b37524d, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: 9142ab6302813b642bc2532e9a4498b7, type: 2}
   m_BuildHeightMesh: 1
 --- !u!1 &1806932583
 GameObject:
@@ -3608,7 +3608,7 @@ GameObject:
   - component: {fileID: 1957119583}
   - component: {fileID: 1957119586}
   - component: {fileID: 1957119585}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
