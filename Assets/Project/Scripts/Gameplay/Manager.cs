@@ -1,4 +1,5 @@
 using DG.Tweening.Core.Easing;
+using Pathfinding;
 using Sirenix.OdinInspector;
 using System;
 using System.Collections;
@@ -15,7 +16,7 @@ public class Manager : Entity
     public float efficiency = 1;
     private void Awake()
     {
-        navMeshAgent = GetComponent<NavMeshAgent>();
+        navMeshAgent = GetComponent<FollowerEntity>();
         actionQueue = new Queue<Action>();
     }
     private void Start()

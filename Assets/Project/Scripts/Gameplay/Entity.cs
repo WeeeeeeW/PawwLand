@@ -1,3 +1,4 @@
+using Pathfinding;
 using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using UnityEngine.AI;
 
 public abstract class Entity : SerializedMonoBehaviour
 {
-    protected NavMeshAgent navMeshAgent;
+    protected FollowerEntity navMeshAgent;
     [ReadOnly] public Transform destination;
     [SerializeField] protected Queue<Action> actionQueue;
 
@@ -14,14 +15,14 @@ public abstract class Entity : SerializedMonoBehaviour
     {
         navMeshAgent.updateRotation = true;
         destination = target;
-        navMeshAgent.SetDestination(destination.position);
+        navMeshAgent.destination = destination.position;
     }
     public virtual void ReachDestination()
     {
         if (actionQueue.Count > 0)
         {
             navMeshAgent.updateRotation = false;
-            navMeshAgent.velocity = Vector3.zero;
+            //navMeshAgent.velocity = Vector3.zero;
             actionQueue.Dequeue().Invoke();
         }
     }

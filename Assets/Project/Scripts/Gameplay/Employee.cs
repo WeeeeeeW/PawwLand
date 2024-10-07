@@ -1,3 +1,4 @@
+using Pathfinding;
 using Sirenix.OdinInspector;
 using System;
 using System.Collections;
@@ -15,7 +16,7 @@ public class Employee : Entity
     [SerializeField] float efficiency = 1f;
     void Awake()
     {
-        navMeshAgent = GetComponent<NavMeshAgent>();
+        navMeshAgent = GetComponent<FollowerEntity>();
     }
     private void Start()
     {

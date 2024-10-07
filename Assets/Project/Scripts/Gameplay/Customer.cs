@@ -1,3 +1,4 @@
+using Pathfinding;
 using Sirenix.OdinInspector;
 using System;
 using System.Collections;
@@ -17,7 +18,7 @@ public class Customer : Entity
     {
         // Assign the task manager
         taskManager = TaskManager.Instance;
-        navMeshAgent = GetComponent<NavMeshAgent>();
+        navMeshAgent = GetComponent<FollowerEntity>();
         actionQueue = new Queue<Action>();
         pet.AssignToOwner(this);
         MoveToCounter();
