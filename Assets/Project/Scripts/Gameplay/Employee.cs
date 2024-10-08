@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using Random = UnityEngine.Random;
 
 public class Employee : Entity
 {
@@ -14,6 +15,7 @@ public class Employee : Entity
     private TaskManager taskManager;
     [SerializeField] Transform petHolder;
     [SerializeField] float efficiency = 1f;
+    bool patroling = false;
     void Awake()
     {
         navMeshAgent = GetComponent<FollowerEntity>();
@@ -22,16 +24,52 @@ public class Employee : Entity
     {
         taskManager = TaskManager.Instance;
         actionQueue = new Queue<Action>();
+        //if (isAvailable)
+        //{
+        //    Patrol();
+        //}
+    }
+
+    private void Update()
+    {
+        if (isAvailable && (navMeshAgent.reachedEndOfPath || !navMeshAgent.hasPath) && !patroling)
+        {
+            StartCoroutine("Patrol");
+        }
+    }
+
+    public override IEnumerator Patrol()
+    {
+        patroling = true;
+        navMeshAgent.updateRotation = true;
+        yield return new WaitForSeconds(3f);
+        if (!isAvailable)
+        {
+            yield break;
+        }
+        GraphNode randomNode;
+
+        // For grid graphs
+        var grid = AstarPath.active.data.gridGraph;
+        randomNode = grid.nodes[Random.Range(0, grid.nodes.Length)];
+
+        // Use the center of the node as the destination for example
+        var destination1 = (Vector3)randomNode.position;
+        navMeshAgent.SetDestination(destination1);
+        yield return new WaitUntil(() => navMeshAgent.reachedEndOfPath || !navMeshAgent.hasPath);
+        patroling = false;
     }
 
     public void AssignTask(IdleTask task)
     {
         isAvailable = false;
+        patroling = false;
+        StopCoroutine("Patrol");
         SetTarget(TaskManager.Instance.petzone.employeeDoor);
 
         currentTask = task;
         actionQueue.Enqueue(() => StartCoroutine(PickupPet(task.pet)));
-        if(Vector3.Distance(transform.position, TaskManager.Instance.petzone.employeeDoor.position) < 1f)
+        if (Vector3.Distance(transform.position, TaskManager.Instance.petzone.employeeDoor.position) < 1f)
             ReachDestination();
     }
 

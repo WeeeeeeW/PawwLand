@@ -1,9 +1,11 @@
 using Pathfinding;
 using Sirenix.OdinInspector;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using Random = UnityEngine.Random;
 
 public abstract class Entity : SerializedMonoBehaviour
 {
@@ -27,4 +29,19 @@ public abstract class Entity : SerializedMonoBehaviour
         }
     }
 
+    public virtual IEnumerator Patrol()
+    {
+        navMeshAgent.updateRotation = true;
+        yield return new WaitForSeconds(3f);
+        GraphNode randomNode;
+
+        // For grid graphs
+        var grid = AstarPath.active.data.gridGraph;
+        randomNode = grid.nodes[Random.Range(0, grid.nodes.Length)];
+        Debug.Log(randomNode);
+
+        // Use the center of the node as the destination for example
+        var destination1 = (Vector3)randomNode.position;
+        navMeshAgent.SetDestination(destination1);
+    }
 }
