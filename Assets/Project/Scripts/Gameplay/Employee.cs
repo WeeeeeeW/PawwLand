@@ -27,11 +27,11 @@ public class Employee : Entity
     public void AssignTask(IdleTask task)
     {
         isAvailable = false;
-        SetTarget(TaskManager.Instance.petzone.door);
+        SetTarget(TaskManager.Instance.petzone.employeeDoor);
 
         currentTask = task;
         actionQueue.Enqueue(() => StartCoroutine(PickupPet(task.pet)));
-        if(Vector3.Distance(transform.position, TaskManager.Instance.petzone.door.position) < 1f)
+        if(Vector3.Distance(transform.position, TaskManager.Instance.petzone.employeeDoor.position) < 1f)
             ReachDestination();
     }
 
@@ -81,7 +81,7 @@ public class Employee : Entity
             //Pickup Pet
             currentTask.pet.transform.parent = petHolder;
             currentTask.pet.transform.localPosition = Vector3.zero;
-            SetTarget(taskManager.petzone.door);
+            SetTarget(taskManager.petzone.employeeDoor);
             actionQueue.Enqueue(() => StartCoroutine(ReturnPet()));
         }
     }

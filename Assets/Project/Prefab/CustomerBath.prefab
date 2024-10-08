@@ -142,12 +142,12 @@ MonoBehaviour:
       speed: 3.5
       maxRotationSpeed: 720
       maxOnSpotRotationSpeed: 720
-      slowdownTime: 0.5
+      slowdownTime: 0.1
       slowdownTimeWhenTurningOnSpot: 0
       desiredWallDistance: 0.5
-      leadInRadiusWhenApproachingDestination: 1
+      leadInRadiusWhenApproachingDestination: 0
       allowRotatingOnSpotBacking: 1
-    debugFlags: 0
+    debugFlags: -1
     stopDistance: 0.1
     rotationSmoothing: 0
     positionSmoothing: 0
@@ -170,7 +170,7 @@ MonoBehaviour:
       layer: 1
       collidesWith: -1
       priority: 0.5
-      debug: 0
+      debug: 255
       locked: 0
     pathfindingSettings:
       graphMask:

@@ -48,6 +48,7 @@ public class Customer : Entity
     {
         SetTarget(assignedCounter.customerOut);
         actionQueue.Enqueue(() => SetTarget(TaskManager.Instance.door));
+        actionQueue.Enqueue(() => gameObject.SetActive(false));
         //actionQueue.Enqueue(() => WaitPetFinish());
     }
 
@@ -68,7 +69,7 @@ public class Customer : Entity
         //Tip logic here also
         Debug.Log($"{customerName} paid <color=green>$xxx</color>");
         UnsubscribeToCounter(assignedCounter);
-        SetTarget(taskManager.petzone.door);
+        SetTarget(taskManager.petzone.customerDoor);
         actionQueue.Enqueue(() => StartCoroutine(PickupPet()));
     }
 

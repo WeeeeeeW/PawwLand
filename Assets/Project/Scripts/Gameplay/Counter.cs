@@ -41,7 +41,7 @@ public class Counter : BaseTaskStation
             var x = i - 1;
             _customer.AddActionQueue(() => _customer.SetQueueTarget(customerIn.transform.position + customerIn.forward * x * 1.5f));
         }
-        queueStart.transform.position = customerIn.transform.position + customerIn.forward * entityQueue.Count * 1.5f;
+        //queueStart.transform.position = customerIn.transform.position + customerIn.forward * entityQueue.Count * 1.5f;
         _customer.AddActionQueue(() => _customer.SetQueueTarget(customerIn));
         _customer.InvokeQueue();
     }

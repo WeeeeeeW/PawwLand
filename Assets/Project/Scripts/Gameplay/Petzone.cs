@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Petzone : MonoBehaviour
 {
-    public Transform door, dropoff;
+    public Transform employeeDoor, customerDoor, dropoff;
     // Start is called before the first frame update
     void Start()
     {

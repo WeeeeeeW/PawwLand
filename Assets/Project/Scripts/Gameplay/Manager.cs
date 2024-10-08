@@ -49,7 +49,7 @@ public class Manager : Entity
     {
         yield return new WaitForSeconds(.1f);
         Vector3 startRotation = transform.forward;
-        float rotationSpeed = 360f;
+        float rotationSpeed = 600f;
         Vector3 desiredRotation = counter.transform.position - transform.position;
         desiredRotation.y = 0;
         float rotationAngle = Vector3.Angle(transform.forward, desiredRotation);
