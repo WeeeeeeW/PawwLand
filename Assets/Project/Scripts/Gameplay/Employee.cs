@@ -42,7 +42,6 @@ public class Employee : Entity
     {
         patroling = true;
         navMeshAgent.updateRotation = true;
-        yield return new WaitForSeconds(3f);
         if (!isAvailable)
         {
             yield break;
@@ -57,6 +56,7 @@ public class Employee : Entity
         var destination1 = (Vector3)randomNode.position;
         navMeshAgent.SetDestination(destination1);
         yield return new WaitUntil(() => navMeshAgent.reachedEndOfPath || !navMeshAgent.hasPath);
+        yield return new WaitForSeconds(3f);
         patroling = false;
     }
 
@@ -64,26 +64,28 @@ public class Employee : Entity
     {
         isAvailable = false;
         patroling = false;
-        StopCoroutine("Patrol");
-        SetTarget(TaskManager.Instance.petzone.employeeDoor);
-
         currentTask = task;
-        actionQueue.Enqueue(() => StartCoroutine(PickupPet(task.pet)));
+        StopCoroutine("Patrol");
+        StartCoroutine(PickupPet());
+        //actionQueue.Enqueue(() => StartCoroutine(PickupPet(task.pet)));
         if (Vector3.Distance(transform.position, TaskManager.Instance.petzone.employeeDoor.position) < 1f)
             ReachDestination();
     }
 
-    public IEnumerator PickupPet(Pet _pet)
+    public IEnumerator PickupPet()
     {
+        SetTarget(currentTask.pet.station.employeeTaskPosition);
+        yield return new WaitUntil(() => navMeshAgent.reachedDestination);
         yield return new WaitForSeconds(.2f);
-        _pet.transform.parent = petHolder;
-        _pet.transform.localPosition = Vector3.zero;
+        currentTask.pet.AssignToStation(null);
+        currentTask.pet.transform.parent = petHolder;
+        currentTask.pet.transform.localPosition = Vector3.zero;
         MoveToTaskStation();
     }
 
     private void MoveToTaskStation()
     {
-        BaseTaskStation taskStation = currentTask.GetTaskLocation();
+        TaskStation taskStation = currentTask.GetTaskLocation();
         SetTarget(taskStation.employeeTaskPosition);
         actionQueue.Enqueue(() => StartCoroutine(PerformTask(taskStation)));
 
@@ -91,7 +93,7 @@ public class Employee : Entity
 
     }
 
-    private IEnumerator PerformTask(BaseTaskStation _taskStation)
+    private IEnumerator PerformTask(TaskStation _taskStation)
     {
         if (currentTask != null)
         {
@@ -113,8 +115,7 @@ public class Employee : Entity
 
             Debug.Log($"{employeeName} starts performing {currentTask.serviceType} for {currentTask.customer.customerName}");
             //Place Pet on Task Pos
-            currentTask.pet.transform.parent = _taskStation.taskPosition;
-            currentTask.pet.transform.localPosition = Vector3.zero;
+            currentTask.pet.AssignToStation(_taskStation);
             yield return new WaitForSeconds(_taskStation.taskDuration);
             //Pickup Pet
             currentTask.pet.transform.parent = petHolder;

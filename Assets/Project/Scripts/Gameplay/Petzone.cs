@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Petzone : MonoBehaviour
+public class Petzone : TaskStation
 {
     public Transform employeeDoor, customerDoor, dropoff;
     // Start is called before the first frame update

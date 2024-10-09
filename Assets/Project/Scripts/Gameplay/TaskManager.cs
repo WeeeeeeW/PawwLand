@@ -19,19 +19,19 @@ public class TaskManager : Singleton<TaskManager>
         var allStations = FindObjectsOfType<TaskStation>();
         foreach (var station in allStations)
         {
-            stations[station.serviceType].Add(station);
+            if(stations.ContainsKey(station.serviceType))
+                stations[station.serviceType].Add(station);
         }
     }
     public void CreateTask(Customer customer, Pet pet, ServiceType serviceType)
     {
         IdleTask newTask = new IdleTask(customer, pet, serviceType);
-        Debug.Log($"Task created for {customer.customerName}: {serviceType}");
+        Debug.Log($"Task created for {customer.customerName}: {pet.petName} {serviceType}");
         AssignTask(newTask);
     }
     public void AssignPetToZone(Pet pet)
     {
-        pet.transform.parent = petzone.transform;
-        pet.transform.localPosition = Vector3.zero;
+        pet.AssignToStation(petzone);
     }
 
     public void AssignTask(IdleTask task)

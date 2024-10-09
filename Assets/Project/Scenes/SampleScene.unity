@@ -267,6 +267,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92f63580e2929bf46b94ae6502d58c9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serviceType: 0
+  employeeTaskPosition: {fileID: 142743636}
+  taskPosition: {fileID: 0}
+  taskDuration: 0.2
   employeeDoor: {fileID: 142743636}
   customerDoor: {fileID: 867612620}
   dropoff: {fileID: 1275335570}
@@ -3631,6 +3635,10 @@ PrefabInstance:
     - target: {fileID: 7772160733040539946, guid: cd695e22500fff94ea857eb74c01674c, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9080060007169666891, guid: cd695e22500fff94ea857eb74c01674c, type: 3}
+      propertyPath: petName
+      value: Zoro
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -40,8 +40,8 @@ public class Manager : Entity
     public IEnumerator DropPetIntoPetZone(ServiceType _service, Pet _pet)
     {
         yield return new WaitForSeconds(.2f);
-        taskManager.CreateTask(_pet.owner, _pet, _service);
         taskManager.AssignPetToZone(_pet);
+        taskManager.CreateTask(_pet.owner, _pet, _service);
         SetTarget(taskManager.employeeCounter);
         actionQueue.Enqueue(() => StartCoroutine(CorrectRotationToCounter()));
     }
