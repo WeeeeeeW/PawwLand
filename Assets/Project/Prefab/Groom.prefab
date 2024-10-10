@@ -282,7 +282,7 @@ GameObject:
   - component: {fileID: 212068309591390753}
   - component: {fileID: 8301752098919101252}
   - component: {fileID: 4757226999809215434}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Groom
   m_TagString: Untagged
   m_Icon: {fileID: 0}

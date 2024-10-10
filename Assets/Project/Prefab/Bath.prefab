@@ -105,7 +105,7 @@ GameObject:
   - component: {fileID: 5475459498298673369}
   - component: {fileID: 3743672033203646914}
   - component: {fileID: 6528797522331589124}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Bath
   m_TagString: Untagged
   m_Icon: {fileID: 0}

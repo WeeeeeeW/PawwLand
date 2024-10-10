@@ -11,6 +11,7 @@ public class Employee : Entity
 {
     public string employeeName;
     [HideInInspector] public bool isAvailable = true;
+    [SerializeField][ReadOnly] private Stack<IdleTask> currentTasks;
     [SerializeField][ReadOnly] private IdleTask currentTask;
     private TaskManager taskManager;
     [SerializeField] Transform petHolder;
@@ -24,6 +25,7 @@ public class Employee : Entity
     {
         taskManager = TaskManager.Instance;
         actionQueue = new Queue<Action>();
+        currentTasks = new Stack<IdleTask>();
         //if (isAvailable)
         //{
         //    Patrol();
@@ -64,16 +66,24 @@ public class Employee : Entity
     {
         isAvailable = false;
         patroling = false;
-        currentTask = task;
+        Debug.Log(currentTasks);
+        Debug.Log(task);
+        currentTasks.Push(task);
+        switch (task.serviceType)
+        {
+            case ServiceType.Grooming:
+                currentTasks.Push(new IdleTask(task.customer, task.pet, ServiceType.Bath));
+                break;
+        }
         StopCoroutine("Patrol");
-        StartCoroutine(PickupPet());
-        //actionQueue.Enqueue(() => StartCoroutine(PickupPet(task.pet)));
+        StartCoroutine(PickupPetForTask());
         if (Vector3.Distance(transform.position, TaskManager.Instance.petzone.employeeDoor.position) < 1f)
             ReachDestination();
     }
 
-    public IEnumerator PickupPet()
+    public IEnumerator PickupPetForTask()
     {
+        currentTask = currentTasks.Pop();
         SetTarget(currentTask.pet.station.employeeTaskPosition);
         yield return new WaitUntil(() => navMeshAgent.reachedDestination);
         yield return new WaitForSeconds(.2f);
@@ -95,7 +105,7 @@ public class Employee : Entity
 
     private IEnumerator PerformTask(TaskStation _taskStation)
     {
-        if (currentTask != null)
+        if (currentTasks != null)
         {
             Vector3 startRotation = transform.forward;
             float rotationSpeed = 360f;
@@ -117,9 +127,15 @@ public class Employee : Entity
             //Place Pet on Task Pos
             currentTask.pet.AssignToStation(_taskStation);
             yield return new WaitForSeconds(_taskStation.taskDuration);
+            if (currentTasks.Count > 0)
+            {
+                StartCoroutine(PickupPetForTask());
+                yield break;
+            }
             //Pickup Pet
             currentTask.pet.transform.parent = petHolder;
             currentTask.pet.transform.localPosition = Vector3.zero;
+
             SetTarget(taskManager.petzone.employeeDoor);
             actionQueue.Enqueue(() => StartCoroutine(ReturnPet()));
         }
@@ -139,6 +155,6 @@ public class Employee : Entity
         currentTask.customer?.ProceedPayment();
         Debug.Log($"{employeeName} completed the task and is now available.");
         currentTask = null;
-        taskManager.AssignTaskFromQueue();
+        taskManager.AssignTaskFromQueue();  
     }
 }
