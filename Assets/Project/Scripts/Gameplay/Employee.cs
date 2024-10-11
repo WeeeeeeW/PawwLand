@@ -10,7 +10,7 @@ using Random = UnityEngine.Random;
 public class Employee : Entity
 {
     public string employeeName;
-    [HideInInspector] public bool isAvailable = true;
+    [ReadOnly] public bool isAvailable = true;
     [SerializeField][ReadOnly] private Stack<IdleTask> currentTasks;
     [SerializeField][ReadOnly] private IdleTask currentTask;
     private TaskManager taskManager;
@@ -48,14 +48,8 @@ public class Employee : Entity
         {
             yield break;
         }
-        GraphNode randomNode;
 
-        // For grid graphs
-        var grid = AstarPath.active.data.gridGraph;
-        randomNode = grid.nodes[Random.Range(0, grid.nodes.Length)];
-
-        // Use the center of the node as the destination for example
-        var destination1 = (Vector3)randomNode.position;
+        Vector3 destination1 = GameManager.Instance.RandomPatrolPosition();
         navMeshAgent.SetDestination(destination1);
         yield return new WaitUntil(() => navMeshAgent.reachedEndOfPath || !navMeshAgent.hasPath);
         yield return new WaitForSeconds(3f);
@@ -64,10 +58,9 @@ public class Employee : Entity
 
     public void AssignTask(IdleTask task)
     {
+        Debug.Log($"{employeeName} is assigned with {task.serviceType}");
         isAvailable = false;
         patroling = false;
-        Debug.Log(currentTasks);
-        Debug.Log(task);
         currentTasks.Push(task);
         switch (task.serviceType)
         {
@@ -77,27 +70,37 @@ public class Employee : Entity
         }
         StopCoroutine("Patrol");
         StartCoroutine(PickupPetForTask());
-        if (Vector3.Distance(transform.position, TaskManager.Instance.petzone.employeeDoor.position) < 1f)
-            ReachDestination();
+        //if (Vector3.Distance(transform.position, TaskManager.Instance.petzone.employeeDoor.position) < 1f)
+        //    ReachDestination();
     }
 
     public IEnumerator PickupPetForTask()
     {
         currentTask = currentTasks.Pop();
-        SetTarget(currentTask.pet.station.employeeTaskPosition);
-        yield return new WaitUntil(() => navMeshAgent.reachedDestination);
-        yield return new WaitForSeconds(.2f);
-        currentTask.pet.AssignToStation(null);
-        currentTask.pet.transform.parent = petHolder;
-        currentTask.pet.transform.localPosition = Vector3.zero;
-        MoveToTaskStation();
+        SetTarget(currentTask.pet.station.queueStart);
+        currentTask.pet.station.QueueUp(this);
+        actionQueue.Enqueue(() =>
+        {
+            SubscribeToStation(currentTask.pet.station);
+            StartCoroutine(currentTask.pet.station.AdvanceQueue());
+            currentTask.pet.AssignToStation(null);
+            currentTask.pet.transform.parent = petHolder;
+            currentTask.pet.transform.localPosition = Vector3.zero;
+            MoveToTaskStation();
+        });
+        yield return null;
     }
 
     private void MoveToTaskStation()
     {
         TaskStation taskStation = currentTask.GetTaskLocation();
-        SetTarget(taskStation.employeeTaskPosition);
-        actionQueue.Enqueue(() => StartCoroutine(PerformTask(taskStation)));
+        SetTarget(taskStation.queueStart);
+        actionQueue.Enqueue(() =>
+        {
+            SubscribeToStation(taskStation);
+            taskStation.QueueUp(this);
+            actionQueue.Enqueue(() => StartCoroutine(PerformTask(taskStation)));
+        });
 
         //PerformTask();
 
@@ -127,6 +130,8 @@ public class Employee : Entity
             //Place Pet on Task Pos
             currentTask.pet.AssignToStation(_taskStation);
             yield return new WaitForSeconds(_taskStation.taskDuration);
+            UnsubscribeToStation(_taskStation);
+            StartCoroutine(_taskStation.AdvanceQueue());
             if (currentTasks.Count > 0)
             {
                 StartCoroutine(PickupPetForTask());
@@ -136,7 +141,8 @@ public class Employee : Entity
             currentTask.pet.transform.parent = petHolder;
             currentTask.pet.transform.localPosition = Vector3.zero;
 
-            SetTarget(taskManager.petzone.employeeDoor);
+            SetTarget(taskManager.petzone.queueStart);
+            taskManager.petzone.QueueUp(this);
             actionQueue.Enqueue(() => StartCoroutine(ReturnPet()));
         }
     }
@@ -155,6 +161,17 @@ public class Employee : Entity
         currentTask.customer?.ProceedPayment();
         Debug.Log($"{employeeName} completed the task and is now available.");
         currentTask = null;
-        taskManager.AssignTaskFromQueue();  
+        taskManager.AssignTaskFromQueue();
+    }
+
+    Action _actionRef;
+    public void SubscribeToStation(TaskStation _station)
+    {
+        _actionRef = () => actionQueue.Dequeue().Invoke();
+        _station.advanceQueue += _actionRef;
+    }
+    public void UnsubscribeToStation(TaskStation _station)
+    {
+        _station.advanceQueue -= _actionRef;
     }
 }

@@ -44,4 +44,24 @@ public abstract class Entity : SerializedMonoBehaviour
         var destination1 = (Vector3)randomNode.position;
         navMeshAgent.SetDestination(destination1);
     }
+
+    public void AddActionQueue(Action _action)
+    {
+        actionQueue.Enqueue(_action);
+    }
+    public void InvokeQueue()
+    {
+        actionQueue.Dequeue().Invoke();
+    }
+
+    public void SetQueueTarget(Vector3 _target)
+    {
+        destination = null;
+        navMeshAgent.updateRotation = true;
+        navMeshAgent.SetDestination(_target);
+    }
+    public void SetQueueTarget(Transform _target)
+    {
+        SetTarget(_target);
+    }
 }

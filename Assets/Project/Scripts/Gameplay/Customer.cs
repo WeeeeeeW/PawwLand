@@ -28,7 +28,7 @@ public class Customer : Entity
     {
         // Request a task based on service type
         assignedCounter = TaskManager.Instance.counter;
-        Debug.Log($"{customerName} is coming in with {pet.petName}.");
+        //Debug.Log($"{customerName} is coming in with {pet.petName}.");
         SetTarget(assignedCounter.queueStart);
 
         actionQueue.Enqueue(() =>
@@ -67,7 +67,7 @@ public class Customer : Entity
     void Pay()
     {
         //Tip logic here also
-        Debug.Log($"{customerName} paid <color=green>$xxx</color>");
+        //Debug.Log($"{customerName} paid <color=green>$xxx</color>");
         UnsubscribeToCounter(assignedCounter);
         SetTarget(taskManager.petzone.customerDoor);
         actionQueue.Enqueue(() => StartCoroutine(PickupPet()));
@@ -85,37 +85,18 @@ public class Customer : Entity
     public void Leave()
     {
         // Customer leaves after service is done
-        Debug.Log($"{customerName} is leaving the spa.");
+        //Debug.Log($"{customerName} is leaving the spa.");
         Destroy(gameObject);  // For now, we'll just destroy the customer object.
-    }
-
-    public void SetQueueTarget(Vector3 _target)
-    {
-        destination = null;
-        navMeshAgent.updateRotation = true;
-        navMeshAgent.SetDestination(_target);
-    }
-    public void SetQueueTarget(Transform _target)
-    {
-        SetTarget(_target);
-    }
-    public void AddActionQueue(Action _action)
-    {
-        actionQueue.Enqueue(_action);
-    }
-    public void InvokeQueue()
-    {
-        actionQueue.Dequeue().Invoke();
     }
 
     Action _actionRef;
     public void SubscribeToCounter(Counter _counter)
     {
         _actionRef = () => actionQueue.Dequeue().Invoke();
-        _counter.callNextCustomer += _actionRef;
+        _counter.advanceQueue += _actionRef;
     }
     public void UnsubscribeToCounter(Counter _counter)
     {
-        _counter.callNextCustomer -= _actionRef;
+        _counter.advanceQueue -= _actionRef;
     }
 }

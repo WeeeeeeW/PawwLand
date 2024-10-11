@@ -10,7 +10,7 @@ public class Pet : MonoBehaviour
     public void AssignToOwner(Customer customer)
     {
         owner = customer;
-        Debug.Log($"{petName} has been assigned to {owner.customerName}.");
+        //Debug.Log($"{petName} has been assigned to {owner.customerName}.");
     }
     public void AssignToStation(TaskStation _station)
     {

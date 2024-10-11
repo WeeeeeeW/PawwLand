@@ -1,4 +1,5 @@
 using Sirenix.OdinInspector;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -19,9 +20,10 @@ public class TaskManager : Singleton<TaskManager>
         var allStations = FindObjectsOfType<TaskStation>();
         foreach (var station in allStations)
         {
-            if(stations.ContainsKey(station.serviceType))
+            if (stations.ContainsKey(station.serviceType))
                 stations[station.serviceType].Add(station);
         }
+        StartCoroutine(SpawnCustomer());
     }
     public void CreateTask(Customer customer, Pet pet, ServiceType serviceType)
     {
@@ -69,8 +71,12 @@ public class TaskManager : Singleton<TaskManager>
     }
 
     [Button]
-    void SpawnCustomer()
+    IEnumerator SpawnCustomer()
     {
-        Instantiate(customers[Random.Range(0, customers.Length)], door.position, Quaternion.identity);
+        while (true)
+        {
+            Instantiate(customers[Random.Range(0, customers.Length)], door.position, Quaternion.identity);
+            yield return new WaitForSeconds(Random.Range(7f, 9f));
+        }
     }
 }

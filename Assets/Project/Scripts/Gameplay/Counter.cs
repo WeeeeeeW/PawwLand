@@ -1,4 +1,5 @@
 using DG.Tweening.Core.Easing;
+using Pathfinding;
 using Sirenix.OdinInspector;
 using System;
 using System.Collections;
@@ -9,8 +10,7 @@ using UnityEngine.InputSystem;
 public class Counter : BaseTaskStation
 {
     [SerializeField] public Manager manager;
-    public Transform customerOut, customerIn, queueStart;
-    public Action callNextCustomer;
+    public Transform customerOut, customerIn;
     // Start is called before the first frame update
     void Start()
     {
@@ -23,18 +23,20 @@ public class Counter : BaseTaskStation
         yield return new WaitUntil(() => manager.isAvailable);
         yield return new WaitForSeconds(taskDuration / manager.efficiency);
         Customer _customer = (Customer)entityQueue.Dequeue();
+        _customer.GetComponent<FollowerEntity>().enableLocalAvoidance = true;
         if (requestService)
         {
-            Debug.Log($"{_customer.customerName} requests {_customer.requestedService}");
+            //Debug.Log($"{_customer.customerName} requests {_customer.requestedService}");
             manager.AssignTask(_customer.requestedService, _customer.pet);
         }
-        callNextCustomer?.Invoke();
+        advanceQueue?.Invoke();
         _customer.UnsubscribeToCounter(this);
     }
 
     public override void QueueUp(Entity _entity)
     {
         Customer _customer = _entity.GetComponent<Customer>();
+        _customer.GetComponent<FollowerEntity>().enableLocalAvoidance = false;
         entityQueue.Enqueue(_customer);
         for (int i = entityQueue.Count; i > 1; i--)
         {
