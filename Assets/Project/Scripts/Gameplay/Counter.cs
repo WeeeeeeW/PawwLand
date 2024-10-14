@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using DG.Tweening.Core.Easing;
 using Pathfinding;
 using Sirenix.OdinInspector;
@@ -15,36 +16,37 @@ public class Counter : BaseTaskStation
     void Start()
     {
         manager.AssignToCounter(this);
-        entityQueue = new Queue<Entity>();
+        entityQueue = new List<Entity>();
+    }
+    private void Update()
+    {
+        if(isAvailable)
+            TakeOrder();
+    }
+    public async void TakeOrder()
+    {
+        if (entityQueue.Count <= 0)
+        {
+            return;
+        }
+        isAvailable = false;
+        Customer _customer = (Customer)entityQueue[0];
+        await _customer.SetTarget(entityTaskPosition);
+        _customer.RequestService();
     }
 
-    public override IEnumerator AdvanceQueue(bool requestService)
-    {
-        yield return new WaitUntil(() => manager.isAvailable);
-        yield return new WaitForSeconds(taskDuration / manager.efficiency);
-        Customer _customer = (Customer)entityQueue.Dequeue();
-        _customer.GetComponent<FollowerEntity>().enableLocalAvoidance = true;
-        if (requestService)
-        {
-            //Debug.Log($"{_customer.customerName} requests {_customer.requestedService}");
-            manager.AssignTask(_customer.requestedService, _customer.pet);
-        }
-        advanceQueue?.Invoke();
-        _customer.UnsubscribeToCounter(this);
-    }
+    //public override IEnumerator AdvanceQueue(bool requestService)
+    //{
+    //    yield return new WaitUntil(() => manager.isAvailable);
+    //    yield return new WaitForSeconds(taskDuration / manager.efficiency);
+    //    //_customer.GetComponent<FollowerEntity>().enableLocalAvoidance = true;
+    //    //if (requestService)
+    //    //{
+    //    //    //Debug.Log($"{_customer.customerName} requests {_customer.requestedService}");
+    //    //    manager.AssignTask(_customer.requestedService, _customer.pet);
+    //    //}
+    //    //advanceQueue?.Invoke();
+    //    //_customer.UnsubscribeToCounter(this);
+    //}
 
-    public override void QueueUp(Entity _entity)
-    {
-        Customer _customer = _entity.GetComponent<Customer>();
-        _customer.GetComponent<FollowerEntity>().enableLocalAvoidance = false;
-        entityQueue.Enqueue(_customer);
-        for (int i = entityQueue.Count; i > 1; i--)
-        {
-            var x = i - 1;
-            _customer.AddActionQueue(() => _customer.SetQueueTarget(customerIn.transform.position + customerIn.forward * x * 1.5f));
-        }
-        //queueStart.transform.position = customerIn.transform.position + customerIn.forward * entityQueue.Count * 1.5f;
-        _customer.AddActionQueue(() => _customer.SetQueueTarget(customerIn));
-        _customer.InvokeQueue();
-    }
 }

@@ -1,34 +1,41 @@
+using Cysharp.Threading.Tasks;
 using Pathfinding;
 using Sirenix.OdinInspector;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 using Random = UnityEngine.Random;
 
 public abstract class Entity : SerializedMonoBehaviour
 {
     protected FollowerEntity navMeshAgent;
-    [ReadOnly] public Transform destination;
-    [SerializeField] protected Queue<Action> actionQueue;
-
-    protected virtual void SetTarget(Transform target)
+    protected BaseTaskStation assignedStation;
+    [SerializeField] protected Transform petHolder;
+    public virtual async UniTask SetTarget(Transform target)
     {
         navMeshAgent.updateRotation = true;
-        destination = target;
-        navMeshAgent.destination = destination.position;
+        navMeshAgent.destination = target.position;
+        await UniTask.WaitUntil(() => navMeshAgent.reachedDestination);
     }
-    public virtual void ReachDestination()
+    public virtual async UniTask SetTarget(Transform[] targets)
     {
-        if (actionQueue.Count > 0)
+        foreach (Transform target in targets)
         {
-            navMeshAgent.updateRotation = false;
-            //navMeshAgent.velocity = Vector3.zero;
-            actionQueue.Dequeue().Invoke();
+            navMeshAgent.destination = target.position;
+            await UniTask.WaitUntil(() => navMeshAgent.reachedDestination);
         }
     }
 
+    public void AssignPet(Pet _pet)
+    {
+        _pet.transform.parent = petHolder;
+        _pet.transform.localPosition = Vector3.zero;
+    }
+
+    public void AssignToStation(BaseTaskStation _station)
+    {
+        assignedStation = _station;
+    }
     public virtual IEnumerator Patrol()
     {
         navMeshAgent.updateRotation = true;
@@ -44,24 +51,14 @@ public abstract class Entity : SerializedMonoBehaviour
         var destination1 = (Vector3)randomNode.position;
         navMeshAgent.SetDestination(destination1);
     }
-
-    public void AddActionQueue(Action _action)
-    {
-        actionQueue.Enqueue(_action);
-    }
-    public void InvokeQueue()
-    {
-        actionQueue.Dequeue().Invoke();
-    }
-
     public void SetQueueTarget(Vector3 _target)
     {
-        destination = null;
         navMeshAgent.updateRotation = true;
         navMeshAgent.SetDestination(_target);
     }
-    public void SetQueueTarget(Transform _target)
+    public void ExitStation()
     {
-        SetTarget(_target);
+        SetTarget(assignedStation.exitTF);
+        AssignToStation(null);
     }
 }

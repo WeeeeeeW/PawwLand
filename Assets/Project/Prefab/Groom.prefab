@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4959359327111394437}
-  - component: {fileID: 7297171482242072519}
   - component: {fileID: 5571227221923866135}
   - component: {fileID: 5103667755046537682}
   m_Layer: 0
@@ -34,18 +33,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 212068309591390753}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7297171482242072519
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1547465190585779780}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c55ebf6b90559f46908b9cde68527f3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!65 &5571227221923866135
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -103,7 +90,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 527402198719152330}
-  - component: {fileID: 4414046372140310783}
   - component: {fileID: 8664068061838823748}
   - component: {fileID: 7322361530476266802}
   m_Layer: 0
@@ -128,18 +114,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 212068309591390753}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4414046372140310783
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4082593352518563387}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c55ebf6b90559f46908b9cde68527f3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!65 &8664068061838823748
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -280,7 +254,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8287652077809758306}
-  - component: {fileID: 9173336376803081481}
   - component: {fileID: 9103074612980679273}
   - component: {fileID: 5778459146385630848}
   m_Layer: 0
@@ -305,18 +278,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 212068309591390753}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &9173336376803081481
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6071282093553965982}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c55ebf6b90559f46908b9cde68527f3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!65 &9103074612980679273
 BoxCollider:
   m_ObjectHideFlags: 0

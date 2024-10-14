@@ -23,7 +23,7 @@ public class TaskManager : Singleton<TaskManager>
             if (stations.ContainsKey(station.serviceType))
                 stations[station.serviceType].Add(station);
         }
-        StartCoroutine(SpawnCustomer());
+        //SpawnCustomer();
     }
     public void CreateTask(Customer customer, Pet pet, ServiceType serviceType)
     {
@@ -71,7 +71,13 @@ public class TaskManager : Singleton<TaskManager>
     }
 
     [Button]
-    IEnumerator SpawnCustomer()
+    void SpawnCustomer()
+    {
+        //StartCoroutine(SpawnCustomerCoroutine());
+        Instantiate(customers[Random.Range(0, customers.Length)], door.position, Quaternion.identity);
+    }
+
+    IEnumerator SpawnCustomerCoroutine()
     {
         while (true)
         {

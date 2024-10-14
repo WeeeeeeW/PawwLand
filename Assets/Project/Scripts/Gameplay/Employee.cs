@@ -14,7 +14,6 @@ public class Employee : Entity
     [SerializeField][ReadOnly] private Stack<IdleTask> currentTasks;
     [SerializeField][ReadOnly] private IdleTask currentTask;
     private TaskManager taskManager;
-    [SerializeField] Transform petHolder;
     [SerializeField] float efficiency = 1f;
     bool patroling = false;
     void Awake()
@@ -24,7 +23,6 @@ public class Employee : Entity
     private void Start()
     {
         taskManager = TaskManager.Instance;
-        actionQueue = new Queue<Action>();
         currentTasks = new Stack<IdleTask>();
         //if (isAvailable)
         //{
@@ -69,41 +67,8 @@ public class Employee : Entity
                 break;
         }
         StopCoroutine("Patrol");
-        StartCoroutine(PickupPetForTask());
         //if (Vector3.Distance(transform.position, TaskManager.Instance.petzone.employeeDoor.position) < 1f)
         //    ReachDestination();
-    }
-
-    public IEnumerator PickupPetForTask()
-    {
-        currentTask = currentTasks.Pop();
-        SetTarget(currentTask.pet.station.queueStart);
-        currentTask.pet.station.QueueUp(this);
-        actionQueue.Enqueue(() =>
-        {
-            SubscribeToStation(currentTask.pet.station);
-            StartCoroutine(currentTask.pet.station.AdvanceQueue());
-            currentTask.pet.AssignToStation(null);
-            currentTask.pet.transform.parent = petHolder;
-            currentTask.pet.transform.localPosition = Vector3.zero;
-            MoveToTaskStation();
-        });
-        yield return null;
-    }
-
-    private void MoveToTaskStation()
-    {
-        TaskStation taskStation = currentTask.GetTaskLocation();
-        SetTarget(taskStation.queueStart);
-        actionQueue.Enqueue(() =>
-        {
-            SubscribeToStation(taskStation);
-            taskStation.QueueUp(this);
-            actionQueue.Enqueue(() => StartCoroutine(PerformTask(taskStation)));
-        });
-
-        //PerformTask();
-
     }
 
     private IEnumerator PerformTask(TaskStation _taskStation)
@@ -131,19 +96,14 @@ public class Employee : Entity
             currentTask.pet.AssignToStation(_taskStation);
             yield return new WaitForSeconds(_taskStation.taskDuration);
             UnsubscribeToStation(_taskStation);
-            StartCoroutine(_taskStation.AdvanceQueue());
             if (currentTasks.Count > 0)
             {
-                StartCoroutine(PickupPetForTask());
                 yield break;
             }
             //Pickup Pet
             currentTask.pet.transform.parent = petHolder;
             currentTask.pet.transform.localPosition = Vector3.zero;
 
-            SetTarget(taskManager.petzone.queueStart);
-            taskManager.petzone.QueueUp(this);
-            actionQueue.Enqueue(() => StartCoroutine(ReturnPet()));
         }
     }
 
@@ -167,7 +127,6 @@ public class Employee : Entity
     Action _actionRef;
     public void SubscribeToStation(TaskStation _station)
     {
-        _actionRef = () => actionQueue.Dequeue().Invoke();
         _station.advanceQueue += _actionRef;
     }
     public void UnsubscribeToStation(TaskStation _station)

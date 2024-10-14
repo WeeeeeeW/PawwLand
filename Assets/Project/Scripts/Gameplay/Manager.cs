@@ -1,15 +1,12 @@
-using DG.Tweening.Core.Easing;
+using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using Pathfinding;
 using Sirenix.OdinInspector;
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 
 public class Manager : Entity
 {
-    [SerializeField] private Transform petHolder;
     [SerializeField][ReadOnly] Counter counter;
     private TaskManager taskManager;
     public bool isAvailable;
@@ -17,33 +14,33 @@ public class Manager : Entity
     private void Awake()
     {
         navMeshAgent = GetComponent<FollowerEntity>();
-        actionQueue = new Queue<Action>();
     }
     private void Start()
     {
         taskManager = TaskManager.Instance;
-        isAvailable = true;
+        counter.isAvailable = true;
     }
     public void AssignToCounter(Counter _counter)
     {
         counter = _counter;
     }
 
-    public void AssignTask(ServiceType _service, Pet _pet)
+    public async void AssignTask(ServiceType _service, Pet _pet)
     {
-        isAvailable = false;
+        counter.isAvailable = false;
         _pet.transform.parent = petHolder;
         _pet.transform.localPosition = Vector3.zero;
-        SetTarget(taskManager.petzone.dropoff);
-        actionQueue.Enqueue(() => StartCoroutine(DropPetIntoPetZone(_service, _pet)));
+        await SetTarget(taskManager.petzone.dropoff);
+        await UniTask.WaitForSeconds(taskManager.petzone.taskDuration);
+        DropPetIntoPetZone(_service, _pet);
     }
-    public IEnumerator DropPetIntoPetZone(ServiceType _service, Pet _pet)
+    public async void DropPetIntoPetZone(ServiceType _service, Pet _pet)
     {
-        yield return new WaitForSeconds(.2f);
         taskManager.AssignPetToZone(_pet);
         taskManager.CreateTask(_pet.owner, _pet, _service);
-        SetTarget(taskManager.employeeCounter);
-        actionQueue.Enqueue(() => StartCoroutine(CorrectRotationToCounter()));
+        await SetTarget(taskManager.employeeCounter);
+        counter.isAvailable = true;
+        transform.DORotateQuaternion(counter.transform.rotation,.2f);
     }
     IEnumerator CorrectRotationToCounter()
     {
@@ -62,7 +59,6 @@ public class Manager : Entity
             transform.forward = Vector3.Lerp(startRotation, desiredRotation, elapsedTime / rotationDuration);
             yield return null;
         }
-        isAvailable = true;
     }
 
 }
