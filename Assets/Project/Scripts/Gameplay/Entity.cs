@@ -8,37 +8,39 @@ using Random = UnityEngine.Random;
 
 public abstract class Entity : SerializedMonoBehaviour
 {
-    protected FollowerEntity navMeshAgent;
-    protected BaseTaskStation assignedStation;
+    protected FollowerEntity agent;
     [SerializeField] protected Transform petHolder;
     public virtual async UniTask SetTarget(Transform target)
     {
-        navMeshAgent.updateRotation = true;
-        navMeshAgent.destination = target.position;
-        await UniTask.WaitUntil(() => navMeshAgent.reachedDestination);
+        agent.updateRotation = true;
+        agent.destination = target.position;
+        await UniTask.WaitUntil(() => agent.reachedDestination);
     }
     public virtual async UniTask SetTarget(Transform[] targets)
     {
         foreach (Transform target in targets)
         {
-            navMeshAgent.destination = target.position;
-            await UniTask.WaitUntil(() => navMeshAgent.reachedDestination);
+            agent.destination = target.position;
+            await UniTask.WaitUntil(() => agent.reachedDestination);
         }
     }
-
-    public void AssignPet(Pet _pet)
+    public virtual async UniTask SetTarget(Vector3 target)
     {
-        _pet.transform.parent = petHolder;
-        _pet.transform.localPosition = Vector3.zero;
+        agent.updateRotation = true;
+        agent.destination = target;
+        await UniTask.WaitUntil(() => agent.reachedDestination);
     }
-
-    public void AssignToStation(BaseTaskStation _station)
+    public virtual async UniTask SetTarget(Vector3[] targets)
     {
-        assignedStation = _station;
+        foreach (Vector3 target in targets)
+        {
+            agent.destination = target;
+            await UniTask.WaitUntil(() => agent.reachedDestination);
+        }
     }
     public virtual IEnumerator Patrol()
     {
-        navMeshAgent.updateRotation = true;
+        agent.updateRotation = true;
         yield return new WaitForSeconds(3f);
         GraphNode randomNode;
 
@@ -49,16 +51,12 @@ public abstract class Entity : SerializedMonoBehaviour
 
         // Use the center of the node as the destination for example
         var destination1 = (Vector3)randomNode.position;
-        navMeshAgent.SetDestination(destination1);
+        agent.SetDestination(destination1);
     }
-    public void SetQueueTarget(Vector3 _target)
+    public async UniTask SetQueueTarget(Vector3 _target)
     {
-        navMeshAgent.updateRotation = true;
-        navMeshAgent.SetDestination(_target);
-    }
-    public void ExitStation()
-    {
-        SetTarget(assignedStation.exitTF);
-        AssignToStation(null);
+        agent.updateRotation = true;
+        agent.SetDestination(_target);
+        await UniTask.WaitUntil(() => agent.reachedDestination);
     }
 }

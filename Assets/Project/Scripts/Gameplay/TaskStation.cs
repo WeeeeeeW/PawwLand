@@ -1,21 +1,15 @@
-using Pathfinding;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
-public class TaskStation : BaseTaskStation
+public class TaskStation : MonoBehaviour
 {
+    public Transform EntityTarget;
+    private QueueManager queueManager;
+    [SerializeField] List<Transform> queuePos;
     private void Start()
     {
-        entityQueue = new List<Entity>();
+        queueManager = new QueueManager(queuePos);
     }
-    //public override IEnumerator AdvanceQueue(bool requestedService = false)
-    //{
-    //    Employee _employee = (Employee)entityQueue.Dequeue();
-    //    //_employee.GetComponent<FollowerEntity>().enableLocalAvoidance = true;
-    //    Debug.Log($"{_employee.employeeName} finished {serviceType} at {name}");
-    //    advanceQueue?.Invoke();
-    //    _employee.UnsubscribeToStation(this);
-    //    yield return null;
-    //}
 }

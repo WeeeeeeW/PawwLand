@@ -336,7 +336,6 @@ GameObject:
   m_Component:
   - component: {fileID: 212068309591390753}
   - component: {fileID: 8301752098919101252}
-  - component: {fileID: 4757226999809215434}
   m_Layer: 7
   m_Name: Groom
   m_TagString: Untagged
@@ -384,21 +383,3 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0.5, z: 0}
---- !u!114 &4757226999809215434
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9081004919802596835}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e4dc8797c7bf7a4da6d4c052ad6614d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  serviceType: 3
-  employeeTaskPosition: {fileID: 527402198719152330}
-  taskPosition: {fileID: 4959359327111394437}
-  queueStart: {fileID: 8287652077809758306}
-  taskDuration: 5
-  isAvailable: 0

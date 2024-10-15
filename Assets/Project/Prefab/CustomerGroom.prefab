@@ -40,7 +40,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5878982782885685813}
-  - component: {fileID: 869044380804450557}
   - component: {fileID: 5018261174804930502}
   m_Layer: 6
   m_Name: CustomerGroom
@@ -67,32 +66,6 @@ Transform:
   - {fileID: 5172203638026176985}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &869044380804450557
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7772160733040539946}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1f0d029118d7fa64788c99dd30e73d98, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
-  destination: {fileID: 0}
-  customerName: Customer 1
-  requestedService: 3
-  pet: {fileID: 9080060007169666891}
-  petHolder: {fileID: 5172203638026176985}
 --- !u!114 &5018261174804930502
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -251,7 +224,6 @@ GameObject:
   - component: {fileID: 8924501237032764712}
   - component: {fileID: 2018080131772411010}
   - component: {fileID: 3203651759016201966}
-  - component: {fileID: 9080060007169666891}
   m_Layer: 6
   m_Name: Pet
   m_TagString: Untagged
@@ -324,19 +296,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &9080060007169666891
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9206968607419772142}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 46c598cb2322b75458628781f3890fc9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  petName: 
-  owner: {fileID: 0}
-  petType: 0
-  station: {fileID: 0}
