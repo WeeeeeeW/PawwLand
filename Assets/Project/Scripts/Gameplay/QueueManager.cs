@@ -16,19 +16,22 @@ public class QueueManager
     {
         waitingQueue.Enqueue(entity);
         Debug.Log($"{entity} added to the queue.");
+        UpdateQueuePositions();
+    }
 
-        // Assign queue position based on current size of queue
-        int queueIndex = waitingQueue.Count - 1;
-        if (queueIndex < queuePositions.Count)
+    public void RemoveFromQueue()
+    {
+        if (waitingQueue.Count > 0)
         {
-            Vector3 targetQueuePosition = queuePositions[queueIndex].position;
-            entity.SetTarget(targetQueuePosition);
+            Entity entity = waitingQueue.Dequeue();
+            Debug.Log($"{entity} leaves the queue.");
+            UpdateQueuePositions();
         }
     }
 
     private void UpdateQueuePositions()
     {
-        // Update each customer to move to the next position in the queue
+        // Update each entity to move to the next position in the queue
         int index = 0;
         foreach (Entity entity in waitingQueue)
         {
@@ -39,5 +42,18 @@ public class QueueManager
                 index++;
             }
         }
+    }
+    public bool HasWaitingEntities()
+    {
+        return waitingQueue.Count > 0;
+    }
+
+    public Entity GetNextInQueue()
+    {
+        if (waitingQueue.Count > 0)
+        {
+            return waitingQueue.Peek();
+        }
+        return null;
     }
 }

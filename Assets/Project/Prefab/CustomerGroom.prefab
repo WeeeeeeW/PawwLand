@@ -41,6 +41,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5878982782885685813}
   - component: {fileID: 5018261174804930502}
+  - component: {fileID: 7912179451496579583}
   m_Layer: 6
   m_Name: CustomerGroom
   m_TagString: Untagged
@@ -130,6 +131,31 @@ MonoBehaviour:
     period: 2
   orientationBacking: 0
   movementPlaneSourceBacking: 0
+--- !u!114 &7912179451496579583
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7772160733040539946}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9a9b8ecaebe4e9499c29fcef8a1cde7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  petHolder: {fileID: 5172203638026176985}
+  customerName: 
+  requestedService: 2
+  pet: {fileID: 5084755881391319713}
 --- !u!1 &8990332351155185705
 GameObject:
   m_ObjectHideFlags: 0
@@ -224,6 +250,7 @@ GameObject:
   - component: {fileID: 8924501237032764712}
   - component: {fileID: 2018080131772411010}
   - component: {fileID: 3203651759016201966}
+  - component: {fileID: 5084755881391319713}
   m_Layer: 6
   m_Name: Pet
   m_TagString: Untagged
@@ -296,3 +323,17 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &5084755881391319713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9206968607419772142}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f253b123303140743bb3feb28046112f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  petType: 0
+  owner: {fileID: 0}
