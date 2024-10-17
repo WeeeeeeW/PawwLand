@@ -1,8 +1,5 @@
 using Cysharp.Threading.Tasks;
-using DG.Tweening.Core.Easing;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using System.Threading;
 
 public class Cashier : Entity
 {
@@ -20,9 +17,10 @@ public class Cashier : Entity
         await SetTarget(TaskManager.Instance.petZones[_idleTask.pet.petType].CashierDropoffTF);
         await petZone.ReceiveTask(_idleTask);
         await SetTarget(assignedCounter.CashierStand(), assignedCounter.CashierStand().rotation);
-    }    
-    void OrderTask()
-    {
+    }
 
-    }    
+    public override UniTask Patrol(CancellationToken cancellationToken)
+    {
+        throw new System.NotImplementedException();
+    }
 }

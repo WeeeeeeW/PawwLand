@@ -38,7 +38,7 @@ public class QueueManager
             if (index < queuePositions.Count)
             {
                 Vector3 targetQueuePosition = queuePositions[index].position;
-                entity.SetTarget(targetQueuePosition);
+                entity.SetTarget(targetQueuePosition, queuePositions[index].rotation);
                 index++;
             }
         }

@@ -2,29 +2,30 @@ using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Pathfinding;
 using Sirenix.OdinInspector;
-using System;
-using System.Collections;
+using System.Threading;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public abstract class Entity : SerializedMonoBehaviour
 {
     protected FollowerEntity agent;
     [SerializeField] protected Transform petHolder;
     protected Pet currentPet;
+    protected TaskManager taskManager;
     private void Awake()
     {
         agent = GetComponent<FollowerEntity>();
     }
+    protected virtual void Start()
+    {
+        taskManager = TaskManager.Instance;
+    }
     public virtual async UniTask SetTarget(Transform target)
     {
-        agent.updateRotation = true;
         agent.destination = target.position;
         await UniTask.WaitUntil(() => agent.reachedDestination);
     }
     public virtual async UniTask SetTarget(Transform target, Quaternion rotation)
     {
-        agent.updateRotation = true;
         agent.destination = target.position;
         await UniTask.WaitUntil(() => agent.reachedDestination);
         await transform.DORotateQuaternion(rotation, .2f);
@@ -38,13 +39,11 @@ public abstract class Entity : SerializedMonoBehaviour
     }
     public virtual async UniTask SetTarget(Vector3 target)
     {
-        agent.updateRotation = true;
         agent.destination = target;
-        await UniTask.WaitUntil(() => agent.reachedDestination);
+        await UniTask.WaitUntil(() => agent.reachedDestination || agent.reachedEndOfPath);
     }
     public virtual async UniTask SetTarget(Vector3 target, Quaternion rotation)
     {
-        agent.updateRotation = true;
         agent.destination = target;
         await UniTask.WaitUntil(() => agent.reachedDestination);
         await transform.DORotateQuaternion(rotation, .2f);
@@ -56,30 +55,15 @@ public abstract class Entity : SerializedMonoBehaviour
             await SetTarget(target);
         }
     }
-    public virtual IEnumerator Patrol()
-    {
-        agent.updateRotation = true;
-        yield return new WaitForSeconds(3f);
-        GraphNode randomNode;
-
-        // For grid graphs
-        var grid = AstarPath.active.data.gridGraph;
-        randomNode = grid.nodes[Random.Range(0, grid.nodes.Length)];
-        Debug.Log(randomNode);
-
-        // Use the center of the node as the destination for example
-        var destination1 = (Vector3)randomNode.position;
-        agent.SetDestination(destination1);
-    }
+    public abstract UniTask Patrol(CancellationToken cancellationToken);
     public async UniTask SetQueueTarget(Vector3 _target)
     {
-        agent.updateRotation = true;
         agent.SetDestination(_target);
         await UniTask.WaitUntil(() => agent.reachedDestination);
     }
 
 
-    public void PickupPet(Pet pet)
+    public virtual void PickupPet(Pet pet)
     {
         currentPet = pet;
         currentPet.transform.parent = petHolder;

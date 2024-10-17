@@ -20,16 +20,6 @@ public class Counter : MonoBehaviour
 
     public void AssignCustomerToCounter(Customer _customer)
     {
-        //if (!queueManager.HasWaitingEntities() && !isBusy)
-        //{
-        //    // If the station is not busy, proceed with the task
-        //    StartTask(_customer);
-        //}
-        //else
-        //{
-        //    // Add to the queue if the station is busy
-        //    queueManager.AddToQueue(_customer);
-        //}
         queueManager.AddToQueue(_customer);
         if(!isBusy)
         {

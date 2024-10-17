@@ -1,18 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
+using System.Threading;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class Customer : Entity
 {
     public string customerName;
     public ServiceType requestedService;
-    TaskManager taskManager;
     Counter counter;
     public Pet pet;
-    private void Start()
+    protected override void Start()
     {
-        taskManager = TaskManager.Instance;
+        base.Start();
         currentPet = pet;
         counter = taskManager.counters[0];
         counter.AssignCustomerToCounter(this);
@@ -39,5 +37,10 @@ public class Customer : Entity
     {
         await SetTarget(new Transform[] { counter.CounterExit(), TaskManager.Instance.door });
         gameObject.SetActive(false);
+    }
+
+    public override UniTask Patrol(CancellationToken cancellationToken)
+    {
+        throw new System.NotImplementedException();
     }
 }
