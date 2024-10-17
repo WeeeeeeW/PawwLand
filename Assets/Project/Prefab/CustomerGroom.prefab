@@ -116,7 +116,7 @@ MonoBehaviour:
       maxNeighbours: 5
       layer: 1
       collidesWith: -1
-      priority: 0.5
+      priority: 0.6
       debug: 255
       locked: 0
     pathfindingSettings:
@@ -125,7 +125,7 @@ MonoBehaviour:
       tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
       traversableTags: -1
     enableLocalAvoidance: 1
-    enableGravity: 1
+    enableGravity: 0
   autoRepathBacking:
     mode: 2
     period: 2

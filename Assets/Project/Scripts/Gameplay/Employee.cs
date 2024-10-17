@@ -75,16 +75,13 @@ public class Employee : Entity
     public override async UniTask Patrol(CancellationToken _cancellationToken)
     {
         GraphNode randomNode;
-
         // For grid graphs
         var grid = AstarPath.active.data.gridGraph;
         randomNode = grid.nodes[Random.Range(0, grid.nodes.Length)];
-        Debug.Log(randomNode.NodeIndex);
         // Use the center of the node as the destination for example
         var destination1 = (Vector3)randomNode.position;
 
         _cancellationToken.ThrowIfCancellationRequested();
-        Debug.Log(destination1);
 
         await SetTarget(destination1);
         await UniTask.WaitForSeconds(3f);
