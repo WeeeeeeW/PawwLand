@@ -7,7 +7,7 @@ using static Pathfinding.Drawing.DrawingData;
 
 public class PetZone : MonoBehaviour
 {
-    public Transform CashierDropoffTF, EmployeePickupPoint;
+    public Transform CashierDropoffTF, EmployeePickupPoint, CustomerPickupPoint;
     float taskDuration = .2f;
     private QueueManager queueManager;
     [SerializeField] List<Transform> queuePos;
@@ -47,6 +47,7 @@ public class PetZone : MonoBehaviour
             _pet.transform.parent = transform;
             _pet.transform.localPosition = Vector3.zero;
             _employee.FinishTask();
+            _pet.owner.MakePayement();
         }    
 
 

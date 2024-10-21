@@ -137,6 +137,7 @@ MonoBehaviour:
   - {fileID: 6853677460315469215}
   - {fileID: 3559872091591751664}
   - {fileID: 5145872808192112548}
+  taskPos: {fileID: 4401030605698219075}
   taskDuration: 1
 --- !u!1 &4461968743670964974
 GameObject:

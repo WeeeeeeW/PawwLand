@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using System.Collections;
 using System.Threading;
 using UnityEngine;
 
@@ -8,9 +9,11 @@ public class Customer : Entity
     public ServiceType requestedService;
     Counter counter;
     public Pet pet;
+    public bool Paying;
     protected override void Start()
     {
         base.Start();
+        pet.owner = this;
         currentPet = pet;
         counter = taskManager.counters[0];
         counter.AssignCustomerToCounter(this);
@@ -28,10 +31,13 @@ public class Customer : Entity
     {
         // Logic for returning to the playground to pick up the pet
     }
-    public async void Leave()
+    public async void Leave(bool reset = false)
     {
         await SetTarget(TaskManager.Instance.door);
         gameObject.SetActive(false);
+        if (reset)
+            //TODO: Impleement This
+            Destroy(gameObject);
     }
     public async void LeaveCounter()
     {
@@ -39,7 +45,20 @@ public class Customer : Entity
         gameObject.SetActive(false);
     }
 
-    public override UniTask Patrol(CancellationToken cancellationToken)
+    public void MakePayement()
+    {
+        gameObject.SetActive(true);
+        Paying = true;
+        counter.AssignCustomerToCounter(this);
+    }
+    public async void PickupPet()
+    {
+        await SetTarget(taskManager.petZones[pet.petType].CustomerPickupPoint);
+        PickupPet(pet);
+        Leave(true);
+    }
+
+    public override void Patrol()
     {
         throw new System.NotImplementedException();
     }

@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using System.Collections;
 using System.Threading;
 
 public class Cashier : Entity
@@ -19,7 +20,7 @@ public class Cashier : Entity
         await SetTarget(assignedCounter.CashierStand(), assignedCounter.CashierStand().rotation);
     }
 
-    public override UniTask Patrol(CancellationToken cancellationToken)
+    public override void Patrol()
     {
         throw new System.NotImplementedException();
     }

@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Pathfinding;
 using Sirenix.OdinInspector;
+using System.Collections;
 using System.Threading;
 using UnityEngine;
 
@@ -55,7 +56,7 @@ public abstract class Entity : SerializedMonoBehaviour
             await SetTarget(target);
         }
     }
-    public abstract UniTask Patrol(CancellationToken cancellationToken);
+    public abstract void Patrol();
     public async UniTask SetQueueTarget(Vector3 _target)
     {
         agent.SetDestination(_target);

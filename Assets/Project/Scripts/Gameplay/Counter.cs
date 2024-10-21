@@ -21,7 +21,7 @@ public class Counter : MonoBehaviour
     public void AssignCustomerToCounter(Customer _customer)
     {
         queueManager.AddToQueue(_customer);
-        if(!isBusy)
+        if (!isBusy)
         {
             StartTask(_customer);
         }
@@ -42,10 +42,17 @@ public class Counter : MonoBehaviour
         // Process next in queue
         queueManager.RemoveFromQueue();
         ProcessNextInQueue();
-        _customer.RequestServiceAtCounter();
-        cashier.PickupPet(_customer.pet);
-        await TakeOrder(new IdleTask(_customer, _customer.requestedService, _customer.pet));
-
+        if (!_customer.Paying)
+        {
+            _customer.RequestServiceAtCounter();
+            cashier.PickupPet(_customer.pet);
+            await TakeOrder(new IdleTask(_customer, _customer.requestedService, _customer.pet));
+        }
+        else
+        {
+            _customer.PickupPet();
+            Debug.Log($"{_customer} paid <color=green>$$$</color>");
+        }
         isBusy = false;
         // Mark the station as free after task completion
 
@@ -63,7 +70,7 @@ public class Counter : MonoBehaviour
     public async UniTask TakeOrder(IdleTask _idleTask)
     {
         await cashier.TakeTask(_idleTask);
-    }    
+    }
     public Transform CashierStand()
     {
         return cashierTF;
@@ -71,5 +78,5 @@ public class Counter : MonoBehaviour
     public Transform CounterExit()
     {
         return counterExitTF;
-    }    
+    }
 }

@@ -9,6 +9,7 @@ public class TaskStation : MonoBehaviour
     public Transform EntityTarget;
     private QueueManager queueManager;
     [SerializeField] List<Transform> queuePos;
+    [SerializeField] Transform taskPos;
     [SerializeField] float taskDuration;
     private bool isBusy = false;
     private void Start()
@@ -29,10 +30,15 @@ public class TaskStation : MonoBehaviour
     {
         await UniTask.WaitUntil(() => !isBusy);
         isBusy = true;
+        Pet _currentPet = _employee.currentTask.pet;
+
         // Move employee to station
         await _employee.SetTarget(EntityTarget);
 
         // Once arrived, request service
+        _currentPet.transform.parent = taskPos;
+        _currentPet.transform.localPosition = Vector3.zero;
+        _employee.ShowProgress(taskDuration);
         await UniTask.WaitForSeconds(taskDuration);
         _employee.PickupPet(_employee.currentTask.pet);
         _employee.NextTask();
