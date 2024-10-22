@@ -66,6 +66,8 @@ public abstract class Entity : SerializedMonoBehaviour
 
     public virtual void PickupPet(Pet pet)
     {
+        pet.currentZone = null;
+        pet.StopPatrolling();
         currentPet = pet;
         currentPet.transform.parent = petHolder;
         currentPet.transform.localPosition = Vector3.zero;

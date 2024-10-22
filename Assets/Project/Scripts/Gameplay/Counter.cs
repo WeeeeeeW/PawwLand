@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
 using UnityEngine.InputSystem;
+using Sirenix.OdinInspector;
 
 public class Counter : MonoBehaviour
 {
@@ -11,7 +12,7 @@ public class Counter : MonoBehaviour
     [SerializeField] Cashier cashier;
     [SerializeField] Transform customerServeTF, counterExitTF, cashierTF;
     [SerializeField] List<Transform> queuePos;
-    private bool isBusy = false;
+    [SerializeField, ReadOnly] private bool isBusy = false;
     [SerializeField] float orderDuration;
     void Awake()
     {
@@ -21,7 +22,7 @@ public class Counter : MonoBehaviour
     public void AssignCustomerToCounter(Customer _customer)
     {
         queueManager.AddToQueue(_customer);
-        if (!isBusy)
+        if (!isBusy || queueManager.GetQueueCount() <= 1)
         {
             StartTask(_customer);
         }

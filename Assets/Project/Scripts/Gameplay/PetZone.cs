@@ -11,6 +11,7 @@ public class PetZone : MonoBehaviour
     float taskDuration = .2f;
     private QueueManager queueManager;
     [SerializeField] List<Transform> queuePos;
+    [SerializeField] List<Transform> patrolArea;
     private bool isBusy = false;
 
     void Awake()
@@ -38,24 +39,24 @@ public class PetZone : MonoBehaviour
         await UniTask.WaitForSeconds(taskDuration);
         if (!_employee.IsComplete)
         {
+            RemovePetFromZone(_employee.currentTask.pet);
             _employee.PickupPet(_employee.currentTask.pet);
             _employee.GoToExecuteTask();
         }
         else
         {
             var _pet = _employee.DropOffPet();
-            _pet.transform.parent = transform;
-            _pet.transform.localPosition = Vector3.zero;
+
             _employee.FinishTask();
+            AssignPetToZone(_pet);
             _pet.owner.MakePayement();
-        }    
+        }
 
 
 
         // Process next in queue
         queueManager.RemoveFromQueue();
         ProcessNextInQueue();
-
         isBusy = false;
         // Mark the station as free after task completion
 
@@ -69,12 +70,29 @@ public class PetZone : MonoBehaviour
             StartTask(nextEmployee);
         }
     }
-
+    public Vector3 RandomPatrolPosition()
+    {
+        return new Vector3(Random.Range(patrolArea[0].position.x, patrolArea[1].position.x), 0, Random.Range(patrolArea[0].position.z, patrolArea[1].position.z));
+    }
     public async UniTask ReceiveTask(IdleTask _idleTask)
     {
         await UniTask.WaitForSeconds(taskDuration);
-        _idleTask.pet.transform.parent = transform;
-        _idleTask.pet.transform.localPosition = Vector3.zero;
+        AssignPetToZone(_idleTask.pet);
         TaskManager.Instance.CreateTask(_idleTask);
+    }
+
+    void AssignPetToZone(Pet _pet)
+    {
+        _pet.transform.parent = transform;
+        _pet.transform.localPosition = Vector3.zero;
+        _pet.currentZone = this;
+        _pet.Patrol();
+    }
+    void RemovePetFromZone(Pet _pet)
+    {
+        _pet.transform.parent = transform;
+        _pet.transform.localPosition = Vector3.zero;
+        _pet.currentZone = null;
+        _pet.StopPatrolling();
     }
 }

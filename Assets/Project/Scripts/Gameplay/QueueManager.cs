@@ -43,6 +43,10 @@ public class QueueManager
             }
         }
     }
+    public int GetQueueCount()
+    { 
+        return waitingQueue.Count; 
+    }
     public bool HasWaitingEntities()
     {
         return waitingQueue.Count > 0;
