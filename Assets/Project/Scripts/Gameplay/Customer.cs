@@ -1,102 +1,65 @@
-using Pathfinding;
-using Sirenix.OdinInspector;
-using System;
+using Cysharp.Threading.Tasks;
 using System.Collections;
-using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
-using UnityEngine.AI;
 
 public class Customer : Entity
 {
     public string customerName;
     public ServiceType requestedService;
+    Counter counter;
     public Pet pet;
-    private TaskManager taskManager;
-    [SerializeField] Transform petHolder;
-    private Counter assignedCounter;
-    void Start()
+    public bool Paying;
+    protected override void Start()
     {
-        // Assign the task manager
-        taskManager = TaskManager.Instance;
-        navMeshAgent = GetComponent<FollowerEntity>();
-        actionQueue = new Queue<Action>();
-        pet.AssignToOwner(this);
-        MoveToCounter();
+        base.Start();
+        pet.owner = this;
+        currentPet = pet;
+        counter = taskManager.counters[0];
+        counter.AssignCustomerToCounter(this);
     }
 
-    private void MoveToCounter()
+    public void RequestServiceAtCounter()
     {
-        // Request a task based on service type
-        assignedCounter = TaskManager.Instance.counter;
-        //Debug.Log($"{customerName} is coming in with {pet.petName}.");
-        SetTarget(assignedCounter.queueStart);
-
-        actionQueue.Enqueue(() =>
-        {
-            SubscribeToCounter(assignedCounter);
-            assignedCounter.QueueUp(this);
-            actionQueue.Enqueue(() => RequestService());
-            actionQueue.Enqueue(() => Exit());
-        });
-        //actionQueue.Enqueue(() => StartCoroutine(RegisterTask()));
-    }
-    private void RequestService()
-    {
-        StartCoroutine(assignedCounter.AdvanceQueue(true));
-    }
-    private void Exit()
-    {
-        SetTarget(assignedCounter.customerOut);
-        actionQueue.Enqueue(() => SetTarget(TaskManager.Instance.door));
-        actionQueue.Enqueue(() => gameObject.SetActive(false));
-        //actionQueue.Enqueue(() => WaitPetFinish());
+        // Logic for requesting a service from TaskManager
+        Debug.Log($"Customer requests {requestedService} service.");
+        DropOffPet();
+        LeaveCounter();
     }
 
-    public void ProceedPayment()
+    public void ReturnToPlayground()
+    {
+        // Logic for returning to the playground to pick up the pet
+    }
+    public async void Leave(bool reset = false)
+    {
+        await SetTarget(TaskManager.Instance.door);
+        gameObject.SetActive(false);
+        if (reset)
+            //TODO: Impleement This
+            Destroy(gameObject);
+    }
+    public async void LeaveCounter()
+    {
+        await SetTarget(new Transform[] { counter.CounterExit(), TaskManager.Instance.door });
+        gameObject.SetActive(false);
+    }
+
+    public void MakePayement()
     {
         gameObject.SetActive(true);
-        SetTarget(assignedCounter.queueStart);
-        actionQueue.Enqueue(() =>
-        {
-            SubscribeToCounter(assignedCounter);
-            assignedCounter.QueueUp(this);
-            actionQueue.Enqueue(() => StartCoroutine(assignedCounter.AdvanceQueue(false)));
-            actionQueue.Enqueue(() => Pay());
-        });
+        Paying = true;
+        counter.AssignCustomerToCounter(this);
     }
-    void Pay()
+    public async void PickupPet()
     {
-        //Tip logic here also
-        //Debug.Log($"{customerName} paid <color=green>$xxx</color>");
-        UnsubscribeToCounter(assignedCounter);
-        SetTarget(taskManager.petzone.customerDoor);
-        actionQueue.Enqueue(() => StartCoroutine(PickupPet()));
+        await SetTarget(taskManager.petZones[pet.petType].CustomerPickupPoint);
+        PickupPet(pet);
+        Leave(true);
     }
 
-    IEnumerator PickupPet()
+    public override void Patrol()
     {
-        yield return new WaitForSeconds(.2f);
-        pet.transform.parent = petHolder;
-        pet.transform.localPosition = Vector3.zero;
-        SetTarget(TaskManager.Instance.door);
-        actionQueue.Enqueue(() => Destroy(gameObject));
-    }
-
-    public void Leave()
-    {
-        // Customer leaves after service is done
-        //Debug.Log($"{customerName} is leaving the spa.");
-        Destroy(gameObject);  // For now, we'll just destroy the customer object.
-    }
-
-    Action _actionRef;
-    public void SubscribeToCounter(Counter _counter)
-    {
-        _actionRef = () => actionQueue.Dequeue().Invoke();
-        _counter.advanceQueue += _actionRef;
-    }
-    public void UnsubscribeToCounter(Counter _counter)
-    {
-        _counter.advanceQueue -= _actionRef;
+        throw new System.NotImplementedException();
     }
 }

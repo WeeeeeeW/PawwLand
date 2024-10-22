@@ -6,34 +6,21 @@ using UnityEngine;
 public class TaskManager : Singleton<TaskManager>
 {
     public Transform employeeCounter, door;
-    public Counter counter;
+    public Counter[] counters;
+    [SerializeField] Employee[] employees;
+    public Dictionary<PetType, PetZone> petZones;
+    public Dictionary<ServiceType, List<TaskStation>> taskStations;
     [SerializeField] private GameObject[] customers;
 
     public Queue<IdleTask> taskQueue = new Queue<IdleTask>();
-    public Manager manager;
-    public List<Employee> employees;
-    public Dictionary<ServiceType, List<TaskStation>> stations;
-    public Petzone petzone;
     private new void Awake()
     {
         base.Awake();
-        var allStations = FindObjectsOfType<TaskStation>();
-        foreach (var station in allStations)
-        {
-            if (stations.ContainsKey(station.serviceType))
-                stations[station.serviceType].Add(station);
-        }
-        StartCoroutine(SpawnCustomer());
+        //SpawnCustomer();
     }
-    public void CreateTask(Customer customer, Pet pet, ServiceType serviceType)
+    public void CreateTask(IdleTask _idleTask)
     {
-        IdleTask newTask = new IdleTask(customer, pet, serviceType);
-        Debug.Log($"Task created for {customer.customerName}: {pet.petName} {serviceType}");
-        AssignTask(newTask);
-    }
-    public void AssignPetToZone(Pet pet)
-    {
-        pet.AssignToStation(petzone);
+        AssignTask(_idleTask);
     }
 
     public void AssignTask(IdleTask task)
@@ -41,37 +28,48 @@ public class TaskManager : Singleton<TaskManager>
         Employee availableEmployee = GetAvailableEmployee();
         if (availableEmployee != null)
         {
-            availableEmployee.AssignTask(task);
+            availableEmployee.TakeTask(task);
         }
         else
         {
-            Debug.Log("No available employees. Adding task to the queue.");
             taskQueue.Enqueue(task);
+            Debug.Log("No available employees. Task added to queue.");
         }
     }
-
-    public void AssignTaskFromQueue()
+    public bool AssignTaskFromQueue()
     {
         if (taskQueue.Count > 0)
         {
             IdleTask nextTask = taskQueue.Dequeue();
             AssignTask(nextTask);
+            return true;
         }
+        return false;
     }
+
+    public TaskStation GetStationForService(ServiceType serviceType)
+    {
+        return taskStations[serviceType][0];  // Get the first available station for the service
+    }
+
     private Employee GetAvailableEmployee()
     {
-        foreach (Employee employee in employees)
+        // Logic to find available employee
+        foreach(Employee employee in employees)
         {
-            if (employee.isAvailable)
-            {
+            if(employee.IsAvailable)
                 return employee;
-            }
         }
         return null;
     }
-
     [Button]
-    IEnumerator SpawnCustomer()
+    void SpawnCustomer()
+    {
+        //StartCoroutine(SpawnCustomerCoroutine());
+        Instantiate(customers[Random.Range(0, customers.Length)], door.position, Quaternion.identity);
+    }
+
+    IEnumerator SpawnCustomerCoroutine()
     {
         while (true)
         {

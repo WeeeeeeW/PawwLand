@@ -6,7 +6,8 @@ using Unity.Burst;
 using Unity.Collections;
 
 namespace Pathfinding.ECS {
-	using System.Collections.Generic;
+    using System;
+    using System.Collections.Generic;
 	using System.Runtime.InteropServices;
 	using Pathfinding;
 	using Pathfinding.Drawing;
@@ -40,7 +41,8 @@ namespace Pathfinding.ECS {
 			// Number of samples to use when approximating the normal, when using the NavmeshNormal mode.
 			const int Samples = 16;
 			sphereSamplePoints = new NativeArray<float3>(Samples, Allocator.Persistent);
-			UnityEngine.Random.InitState(0);
+			//RANDOM INIT STATE
+			//UnityEngine.Random.InitState(DateTime.Now.Second);
 			for (int i = 0; i < Samples; i++) {
 				sphereSamplePoints[i] = (float3)UnityEngine.Random.insideUnitSphere;
 			}

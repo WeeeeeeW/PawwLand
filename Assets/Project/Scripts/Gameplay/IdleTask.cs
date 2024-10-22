@@ -1,32 +1,26 @@
-using System;
 using UnityEngine;
 
-[Serializable]
 public class IdleTask
 {
     public Customer customer;
-    public Pet pet;
     public ServiceType serviceType;
-    public bool isCompleted = false;
+    public Pet pet;
 
-    public IdleTask(Customer customer, Pet pet, ServiceType serviceType)
+    public IdleTask(Customer _customer, ServiceType _serviceType, Pet _pet)
     {
-        this.customer = customer;
-        this.pet = pet;
-        this.serviceType = serviceType;
+        customer = _customer;
+        serviceType = _serviceType;
+        pet = _pet;
+    }
+    public void ExecuteTask(Employee employee)
+    {
+        // Employee has already arrived at the destination
+        //employee.PerformTask(this);
     }
 
-
-    private void CompleteTask(Employee employee)
+    public void CompleteTask()
     {
-        isCompleted = true;
-        Debug.Log($"{employee.name} completed {serviceType} for {customer.customerName}");
-        customer.Leave();  // Customer leaves once the task is done.
-        employee.OnTaskComplete();
-    }
-
-    public TaskStation GetTaskLocation()
-    {
-        return TaskManager.Instance.stations[serviceType][0];
+        Debug.Log($"Task for {customer.customerName} ({serviceType}) completed.");
+        customer.Leave();
     }
 }

@@ -1,67 +1,82 @@
+using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using Pathfinding;
 using Sirenix.OdinInspector;
-using System;
 using System.Collections;
-using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
-using UnityEngine.AI;
-using Random = UnityEngine.Random;
 
 public abstract class Entity : SerializedMonoBehaviour
 {
-    protected FollowerEntity navMeshAgent;
-    [ReadOnly] public Transform destination;
-    [SerializeField] protected Queue<Action> actionQueue;
-
-    protected virtual void SetTarget(Transform target)
+    protected FollowerEntity agent;
+    [SerializeField] protected Transform petHolder;
+    protected Pet currentPet;
+    protected TaskManager taskManager;
+    private void Awake()
     {
-        navMeshAgent.updateRotation = true;
-        destination = target;
-        navMeshAgent.destination = destination.position;
+        agent = GetComponent<FollowerEntity>();
     }
-    public virtual void ReachDestination()
+    protected virtual void Start()
     {
-        if (actionQueue.Count > 0)
+        taskManager = TaskManager.Instance;
+    }
+    public virtual async UniTask SetTarget(Transform target)
+    {
+        agent.destination = target.position;
+        await UniTask.WaitUntil(() => agent.reachedDestination);
+    }
+    public virtual async UniTask SetTarget(Transform target, Quaternion rotation)
+    {
+        agent.destination = target.position;
+        await UniTask.WaitUntil(() => agent.reachedDestination);
+        await transform.DORotateQuaternion(rotation, .2f);
+    }
+    public virtual async UniTask SetTarget(Transform[] targets)
+    {
+        foreach (Transform target in targets)
         {
-            navMeshAgent.updateRotation = false;
-            //navMeshAgent.velocity = Vector3.zero;
-            actionQueue.Dequeue().Invoke();
+            await SetTarget(target);
         }
     }
-
-    public virtual IEnumerator Patrol()
+    public virtual async UniTask SetTarget(Vector3 target)
     {
-        navMeshAgent.updateRotation = true;
-        yield return new WaitForSeconds(3f);
-        GraphNode randomNode;
-
-        // For grid graphs
-        var grid = AstarPath.active.data.gridGraph;
-        randomNode = grid.nodes[Random.Range(0, grid.nodes.Length)];
-        Debug.Log(randomNode);
-
-        // Use the center of the node as the destination for example
-        var destination1 = (Vector3)randomNode.position;
-        navMeshAgent.SetDestination(destination1);
+        agent.destination = target;
+        await UniTask.WaitUntil(() => agent.reachedDestination || agent.reachedEndOfPath);
+    }
+    public virtual async UniTask SetTarget(Vector3 target, Quaternion rotation)
+    {
+        agent.destination = target;
+        await UniTask.WaitUntil(() => agent.reachedDestination);
+        await transform.DORotateQuaternion(rotation, .2f);
+    }
+    public virtual async UniTask SetTarget(Vector3[] targets)
+    {
+        foreach (Vector3 target in targets)
+        {
+            await SetTarget(target);
+        }
+    }
+    public abstract void Patrol();
+    public async UniTask SetQueueTarget(Vector3 _target)
+    {
+        agent.SetDestination(_target);
+        await UniTask.WaitUntil(() => agent.reachedDestination);
     }
 
-    public void AddActionQueue(Action _action)
-    {
-        actionQueue.Enqueue(_action);
-    }
-    public void InvokeQueue()
-    {
-        actionQueue.Dequeue().Invoke();
-    }
 
-    public void SetQueueTarget(Vector3 _target)
+    public virtual void PickupPet(Pet pet)
     {
-        destination = null;
-        navMeshAgent.updateRotation = true;
-        navMeshAgent.SetDestination(_target);
+        pet.currentZone = null;
+        pet.StopPatrolling();
+        currentPet = pet;
+        currentPet.transform.parent = petHolder;
+        currentPet.transform.localPosition = Vector3.zero;
     }
-    public void SetQueueTarget(Transform _target)
+    public Pet DropOffPet()
     {
-        SetTarget(_target);
+        currentPet.transform.parent = null;
+        var temp = currentPet;
+        currentPet = null;
+        return temp;
     }
 }

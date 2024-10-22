@@ -1,33 +1,42 @@
+using Cysharp.Threading.Tasks;
+using Pathfinding;
+using System.Collections;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class Pet : MonoBehaviour
 {
-    public string petName;
-    public Customer owner; // Reference to the customer that owns the pet
-    public PetType petType; // Enum to define the type of pet (Dog, Cat, etc.)
-    public TaskStation station;
-    public void AssignToOwner(Customer customer)
+    public PetType petType;
+    public Customer owner;
+    public PetZone currentZone = null;
+    private FollowerEntity followerEntity;
+    private void Start()
     {
-        owner = customer;
-        //Debug.Log($"{petName} has been assigned to {owner.customerName}.");
+        followerEntity = GetComponent<FollowerEntity>();
+        followerEntity.enabled = false;
     }
-    public void AssignToStation(TaskStation _station)
+    public void Patrol()
     {
-        if (_station != null)
-        {
-            transform.parent = _station.transform;
-            if(_station.taskPosition == null)
-                transform.localPosition = Vector3.zero;
-            else
-                transform.localPosition = _station.taskPosition.localPosition;
-        }
-        else
-        {
-            transform.parent = null;
-        }
-        station = _station;
+        followerEntity.enabled = true;
+        StartCoroutine("PatrolCoroutine");
+    }
+    public void StopPatrolling()
+    {
+        followerEntity.enabled = false;
+        StopCoroutine("PatrolCoroutine");
+    }
+    private IEnumerator PatrolCoroutine()
+    {
+        var destination1 = currentZone.RandomPatrolPosition();
+        UniTask task = SetTarget(destination1);
+        yield return new WaitUntil(() => task.Status.IsCompleted());
+        yield return new WaitForSeconds(3f);
+        Patrol();
+        yield return null;
     }
 
-    // Add any additional methods for pet behavior or animations
+    public virtual async UniTask SetTarget(Vector3 target)
+    {
+        followerEntity.destination = target;
+        await UniTask.WaitUntil(() => followerEntity.reachedDestination || followerEntity.reachedEndOfPath);
+    }
 }

@@ -1,37 +1,66 @@
-using Pathfinding;
+using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
-public class TaskStation : BaseTaskStation
+public class TaskStation : MonoBehaviour
 {
+    public Transform EntityTarget;
+    private QueueManager queueManager;
+    [SerializeField] List<Transform> queuePos;
+    [SerializeField] Transform taskPos;
+    [SerializeField] float taskDuration;
+    private bool isBusy = false;
     private void Start()
     {
-        entityQueue = new Queue<Entity>();
-    }
-    public override IEnumerator AdvanceQueue(bool requestedService = false)
-    {
-        Employee _employee = (Employee)entityQueue.Dequeue();
-        //_employee.GetComponent<FollowerEntity>().enableLocalAvoidance = true;
-        Debug.Log($"{_employee.employeeName} finished {serviceType} at {name}");
-        advanceQueue?.Invoke();
-        _employee.UnsubscribeToStation(this);
-        yield return null;
+        queueManager = new QueueManager(queuePos);
     }
 
-    public override void QueueUp(Entity _entity)
+    public void AssignEmployeeToQueue(Employee _employee)
     {
-        Employee _employee = _entity.GetComponent<Employee>();
-        //_employee.GetComponent<FollowerEntity>().enableLocalAvoidance = false;
-        Debug.Log(entityQueue);
-        entityQueue.Enqueue(_employee);
-        for (int i = entityQueue.Count; i > 1; i--)
+        queueManager.AddToQueue(_employee);
+        if (!isBusy)
         {
-            var x = i - 1;
-            _employee.AddActionQueue(() => _employee.SetQueueTarget(employeeTaskPosition.transform.position + queueStart.forward * x * 1.5f));
+            StartTask(_employee);
         }
-        //queueStart.transform.position = customerIn.transform.position + customerIn.forward * entityQueue.Count * 1.5f;
-        _employee.AddActionQueue(() => _employee.SetQueueTarget(employeeTaskPosition));
-        _employee.InvokeQueue();
     }
+
+    private async void StartTask(Employee _employee)
+    {
+        await UniTask.WaitUntil(() => !isBusy);
+        isBusy = true;
+        Pet _currentPet = _employee.currentTask.pet;
+
+        // Move employee to station
+        await _employee.SetTarget(EntityTarget);
+
+        // Once arrived, request service
+        _currentPet.transform.parent = taskPos;
+        _currentPet.transform.localPosition = Vector3.zero;
+        _employee.ShowProgress(taskDuration);
+        await UniTask.WaitForSeconds(taskDuration);
+        _employee.PickupPet(_employee.currentTask.pet);
+        _employee.NextTask();
+
+
+
+        // Process next in queue
+        queueManager.RemoveFromQueue();
+        ProcessNextInQueue();
+
+        isBusy = false;
+        // Mark the station as free after task completion
+
+    }
+
+    public void ProcessNextInQueue()
+    {
+        if (queueManager.HasWaitingEntities())
+        {
+            Employee nextEmployee = (Employee)queueManager.GetNextInQueue();
+            StartTask(nextEmployee);
+        }
+    }
+
 }

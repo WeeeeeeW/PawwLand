@@ -1,50 +1,83 @@
-using DG.Tweening.Core.Easing;
-using Pathfinding;
-using Sirenix.OdinInspector;
-using System;
+using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
 using UnityEngine.InputSystem;
+using Sirenix.OdinInspector;
 
-public class Counter : BaseTaskStation
+public class Counter : MonoBehaviour
 {
-    [SerializeField] public Manager manager;
-    public Transform customerOut, customerIn;
-    // Start is called before the first frame update
-    void Start()
+    private QueueManager queueManager;
+    [SerializeField] Cashier cashier;
+    [SerializeField] Transform customerServeTF, counterExitTF, cashierTF;
+    [SerializeField] List<Transform> queuePos;
+    [SerializeField, ReadOnly] private bool isBusy = false;
+    [SerializeField] float orderDuration;
+    void Awake()
     {
-        manager.AssignToCounter(this);
-        entityQueue = new Queue<Entity>();
+        queueManager = new QueueManager(queuePos);
     }
 
-    public override IEnumerator AdvanceQueue(bool requestService)
+    public void AssignCustomerToCounter(Customer _customer)
     {
-        yield return new WaitUntil(() => manager.isAvailable);
-        yield return new WaitForSeconds(taskDuration / manager.efficiency);
-        Customer _customer = (Customer)entityQueue.Dequeue();
-        _customer.GetComponent<FollowerEntity>().enableLocalAvoidance = true;
-        if (requestService)
+        queueManager.AddToQueue(_customer);
+        if (!isBusy || queueManager.GetQueueCount() <= 1)
         {
-            //Debug.Log($"{_customer.customerName} requests {_customer.requestedService}");
-            manager.AssignTask(_customer.requestedService, _customer.pet);
+            StartTask(_customer);
         }
-        advanceQueue?.Invoke();
-        _customer.UnsubscribeToCounter(this);
+    }
+    private async void StartTask(Customer _customer)
+    {
+        await UniTask.WaitUntil(() => !isBusy);
+        isBusy = true;
+        // Move customer to counter
+        await _customer.SetTarget(customerServeTF);
+
+        // Once arrived, request service
+        await UniTask.WaitForSeconds(orderDuration);
+
+
+
+
+        // Process next in queue
+        queueManager.RemoveFromQueue();
+        ProcessNextInQueue();
+        if (!_customer.Paying)
+        {
+            _customer.RequestServiceAtCounter();
+            cashier.PickupPet(_customer.pet);
+            await TakeOrder(new IdleTask(_customer, _customer.requestedService, _customer.pet));
+        }
+        else
+        {
+            _customer.PickupPet();
+            Debug.Log($"{_customer} paid <color=green>$$$</color>");
+        }
+        isBusy = false;
+        // Mark the station as free after task completion
+
     }
 
-    public override void QueueUp(Entity _entity)
+    public void ProcessNextInQueue()
     {
-        Customer _customer = _entity.GetComponent<Customer>();
-        _customer.GetComponent<FollowerEntity>().enableLocalAvoidance = false;
-        entityQueue.Enqueue(_customer);
-        for (int i = entityQueue.Count; i > 1; i--)
+        if (queueManager.HasWaitingEntities())
         {
-            var x = i - 1;
-            _customer.AddActionQueue(() => _customer.SetQueueTarget(customerIn.transform.position + customerIn.forward * x * 1.5f));
+            Customer nextCustomer = (Customer)queueManager.GetNextInQueue();
+            StartTask(nextCustomer);
         }
-        //queueStart.transform.position = customerIn.transform.position + customerIn.forward * entityQueue.Count * 1.5f;
-        _customer.AddActionQueue(() => _customer.SetQueueTarget(customerIn));
-        _customer.InvokeQueue();
+    }
+
+    public async UniTask TakeOrder(IdleTask _idleTask)
+    {
+        await cashier.TakeTask(_idleTask);
+    }
+    public Transform CashierStand()
+    {
+        return cashierTF;
+    }
+    public Transform CounterExit()
+    {
+        return counterExitTF;
     }
 }
