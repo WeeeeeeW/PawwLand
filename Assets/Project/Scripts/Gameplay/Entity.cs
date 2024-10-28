@@ -6,29 +6,29 @@ using System.Collections;
 using System.Threading;
 using UnityEngine;
 
-public abstract class Entity : SerializedMonoBehaviour
+public abstract class Entity : MonoBehaviour
 {
-    protected FollowerEntity agent;
-    [SerializeField] protected Transform petHolder;
-    protected Pet currentPet;
-    protected TaskManager taskManager;
+    protected FollowerEntity Agent;
+    [SerializeField] protected Transform PetHolder;
+    protected Pet CurrentPet;
+    protected TaskManager TaskManager;
     private void Awake()
     {
-        agent = GetComponent<FollowerEntity>();
+        Agent = GetComponent<FollowerEntity>();
     }
     protected virtual void Start()
     {
-        taskManager = TaskManager.Instance;
+        TaskManager = TaskManager.Instance;
     }
     public virtual async UniTask SetTarget(Transform target)
     {
-        agent.destination = target.position;
-        await UniTask.WaitUntil(() => agent.reachedDestination);
+        Agent.destination = target.position;
+        await UniTask.WaitUntil(() => Agent.reachedDestination);
     }
     public virtual async UniTask SetTarget(Transform target, Quaternion rotation)
     {
-        agent.destination = target.position;
-        await UniTask.WaitUntil(() => agent.reachedDestination);
+        Agent.destination = target.position;
+        await UniTask.WaitUntil(() => Agent.reachedDestination);
         await transform.DORotateQuaternion(rotation, .2f);
     }
     public virtual async UniTask SetTarget(Transform[] targets)
@@ -40,13 +40,13 @@ public abstract class Entity : SerializedMonoBehaviour
     }
     public virtual async UniTask SetTarget(Vector3 target)
     {
-        agent.destination = target;
-        await UniTask.WaitUntil(() => agent.reachedDestination || agent.reachedEndOfPath);
+        Agent.destination = target;
+        await UniTask.WaitUntil(() => Agent.reachedDestination || Agent.reachedEndOfPath);
     }
     public virtual async UniTask SetTarget(Vector3 target, Quaternion rotation)
     {
-        agent.destination = target;
-        await UniTask.WaitUntil(() => agent.reachedDestination);
+        Agent.destination = target;
+        await UniTask.WaitUntil(() => Agent.reachedDestination);
         await transform.DORotateQuaternion(rotation, .2f);
     }
     public virtual async UniTask SetTarget(Vector3[] targets)
@@ -59,24 +59,24 @@ public abstract class Entity : SerializedMonoBehaviour
     public abstract void Patrol();
     public async UniTask SetQueueTarget(Vector3 _target)
     {
-        agent.SetDestination(_target);
-        await UniTask.WaitUntil(() => agent.reachedDestination);
+        Agent.SetDestination(_target);
+        await UniTask.WaitUntil(() => Agent.reachedDestination);
     }
 
 
     public virtual void PickupPet(Pet pet)
     {
-        pet.currentZone = null;
+        pet.CurrentZone = null;
         pet.StopPatrolling();
-        currentPet = pet;
-        currentPet.transform.parent = petHolder;
-        currentPet.transform.localPosition = Vector3.zero;
+        CurrentPet = pet;
+        CurrentPet.transform.parent = PetHolder;
+        CurrentPet.transform.localPosition = Vector3.zero;
     }
     public Pet DropOffPet()
     {
-        currentPet.transform.parent = null;
-        var temp = currentPet;
-        currentPet = null;
+        CurrentPet.transform.parent = null;
+        var temp = CurrentPet;
+        CurrentPet = null;
         return temp;
     }
 }

@@ -17,6 +17,7 @@ public class Employee : Entity
 
     [SerializeField] FaceCamera progressCanvas;
     [SerializeField] Image progressFill;
+
     protected override void Start()
     {
         base.Start();
@@ -39,7 +40,7 @@ public class Employee : Entity
 
         }
         currentTask = tasks.Dequeue();
-        TaskManager.Instance.petZones[currentTask.pet.petType].AssignEmployeeToQueue(this);
+        TaskManager.Instance.petZones[currentTask.pet.PetType].AssignEmployeeToQueue(this);
     }
 
     public void GoToExecuteTask()
@@ -67,14 +68,14 @@ public class Employee : Entity
     private void ReturnPet()
     {
         IsComplete = true;
-        TaskManager.Instance.petZones[currentTask.pet.petType].AssignEmployeeToQueue(this);
+        TaskManager.Instance.petZones[currentTask.pet.PetType].AssignEmployeeToQueue(this);
     }
 
     public void FinishTask()
     {
         currentTask = null;
         Debug.Log($"{name} completed the task and is now available.");
-        if (!taskManager.AssignTaskFromQueue())
+        if (!TaskManager.AssignTaskFromQueue())
         {
             Patrol();
         }

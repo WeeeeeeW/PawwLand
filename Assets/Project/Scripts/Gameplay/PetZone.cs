@@ -49,7 +49,7 @@ public class PetZone : MonoBehaviour
 
             _employee.FinishTask();
             AssignPetToZone(_pet);
-            _pet.owner.MakePayement();
+            _pet.Owner.MakePayement();
         }
 
 
@@ -85,14 +85,14 @@ public class PetZone : MonoBehaviour
     {
         _pet.transform.parent = transform;
         _pet.transform.localPosition = Vector3.zero;
-        _pet.currentZone = this;
+        _pet.CurrentZone = this;
         _pet.Patrol();
     }
     void RemovePetFromZone(Pet _pet)
     {
         _pet.transform.parent = transform;
         _pet.transform.localPosition = Vector3.zero;
-        _pet.currentZone = null;
+        _pet.CurrentZone = null;
         _pet.StopPatrolling();
     }
 }

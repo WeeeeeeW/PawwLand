@@ -135,16 +135,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d470466905c4b184a80a39c9834ac8d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
-  petHolder: {fileID: 7386904587608491364}
+  PetHolder: {fileID: 7386904587608491364}
 --- !u!1 &1410442340023049733
 GameObject:
   m_ObjectHideFlags: 0

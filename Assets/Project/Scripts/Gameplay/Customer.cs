@@ -10,12 +10,13 @@ public class Customer : Entity
     Counter counter;
     public Pet pet;
     public bool Paying;
+    public Transform PetHolder => base.PetHolder;
     protected override void Start()
     {
         base.Start();
-        pet.owner = this;
-        currentPet = pet;
-        counter = taskManager.counters[0];
+        pet.Owner = this;
+        CurrentPet = pet;
+        counter = TaskManager.counters[0];
         counter.AssignCustomerToCounter(this);
     }
 
@@ -25,11 +26,6 @@ public class Customer : Entity
         Debug.Log($"Customer requests {requestedService} service.");
         DropOffPet();
         LeaveCounter();
-    }
-
-    public void ReturnToPlayground()
-    {
-        // Logic for returning to the playground to pick up the pet
     }
     public async void Leave(bool reset = false)
     {
@@ -53,8 +49,9 @@ public class Customer : Entity
     }
     public async void PickupPet()
     {
-        await SetTarget(taskManager.petZones[pet.petType].CustomerPickupPoint);
+        await SetTarget(TaskManager.petZones[pet.PetType].CustomerPickupPoint);
         PickupPet(pet);
+        pet.FollowOwner();
         Leave(true);
     }
 

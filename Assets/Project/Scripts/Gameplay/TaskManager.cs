@@ -66,7 +66,7 @@ public class TaskManager : Singleton<TaskManager>
     void SpawnCustomer()
     {
         //StartCoroutine(SpawnCustomerCoroutine());
-        Instantiate(customers[Random.Range(0, customers.Length)], door.position, Quaternion.identity);
+        Instantiate(customers[Random.Range(0, customers.Length)], door.position, door.rotation);
     }
 
     IEnumerator SpawnCustomerCoroutine()
