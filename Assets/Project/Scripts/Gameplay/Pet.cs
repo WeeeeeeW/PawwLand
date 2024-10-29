@@ -27,7 +27,7 @@ public class Pet : MonoBehaviour
     }
     public void FollowOwner()
     {
-        if(patrolCoroutine != null)
+        if (patrolCoroutine != null)
             StopCoroutine(patrolCoroutine);
         followerEntity.enabled = true;
         destinationSetter.target = Owner.PetHolder;
@@ -40,8 +40,10 @@ public class Pet : MonoBehaviour
     }
     public void StopPatrolling()
     {
+        destinationSetter.target = null;
         followerEntity.enabled = false;
-        if(patrolCoroutine != null)
+        _animator.SetFloat("Speed", 0);
+        if (patrolCoroutine != null)
             StopCoroutine(patrolCoroutine);
     }
     private IEnumerator PatrolCoroutine()
@@ -55,7 +57,7 @@ public class Pet : MonoBehaviour
     }
     private void Update()
     {
-        if(followerEntity.enabled) 
+        if (followerEntity.enabled)
             _animator.SetFloat("Speed", followerEntity.velocity.magnitude);
     }
     public virtual async UniTask SetTarget(Vector3 target)

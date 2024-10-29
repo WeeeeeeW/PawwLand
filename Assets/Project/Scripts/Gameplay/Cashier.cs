@@ -16,6 +16,7 @@ public class Cashier : Entity
             idleTask = _idleTask;
         var petZone = TaskManager.Instance.petZones[_idleTask.pet.PetType];
         await SetTarget(TaskManager.Instance.petZones[_idleTask.pet.PetType].CashierDropoffTF);
+        DropOffPet();
         await petZone.ReceiveTask(_idleTask);
         await SetTarget(assignedCounter.CashierStand(), assignedCounter.CashierStand().rotation);
     }

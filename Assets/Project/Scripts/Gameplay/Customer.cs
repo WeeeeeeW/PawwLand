@@ -51,6 +51,7 @@ public class Customer : Entity
     {
         await SetTarget(TaskManager.petZones[pet.PetType].CustomerPickupPoint);
         PickupPet(pet);
+        Animator.SetBool("Carry", false);
         pet.FollowOwner();
         Leave(true);
     }

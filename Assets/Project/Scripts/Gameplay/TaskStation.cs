@@ -36,6 +36,7 @@ public class TaskStation : MonoBehaviour
         await _employee.SetTarget(EntityTarget);
 
         // Once arrived, request service
+        _employee.DropOffPet();
         _currentPet.transform.parent = taskPos;
         _currentPet.transform.localPosition = Vector3.zero;
         _employee.ShowProgress(taskDuration);

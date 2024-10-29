@@ -12,6 +12,7 @@ public abstract class Entity : MonoBehaviour
     [SerializeField] protected Transform PetHolder;
     protected Pet CurrentPet;
     protected TaskManager TaskManager;
+    [SerializeField] protected Animator Animator;
     private void Awake()
     {
         Agent = GetComponent<FollowerEntity>();
@@ -19,6 +20,11 @@ public abstract class Entity : MonoBehaviour
     protected virtual void Start()
     {
         TaskManager = TaskManager.Instance;
+    }
+
+    protected virtual void Update()
+    {
+        Animator.SetFloat("Speed", Agent.velocity.magnitude);
     }
     public virtual async UniTask SetTarget(Transform target)
     {
@@ -63,7 +69,6 @@ public abstract class Entity : MonoBehaviour
         await UniTask.WaitUntil(() => Agent.reachedDestination);
     }
 
-
     public virtual void PickupPet(Pet pet)
     {
         pet.CurrentZone = null;
@@ -71,12 +76,15 @@ public abstract class Entity : MonoBehaviour
         CurrentPet = pet;
         CurrentPet.transform.parent = PetHolder;
         CurrentPet.transform.localPosition = Vector3.zero;
+        CurrentPet.transform.rotation = PetHolder.rotation;
+        Animator.SetBool("Carry", true);
     }
     public Pet DropOffPet()
     {
         CurrentPet.transform.parent = null;
         var temp = CurrentPet;
         CurrentPet = null;
+        Animator.SetBool("Carry", false);
         return temp;
     }
 }
