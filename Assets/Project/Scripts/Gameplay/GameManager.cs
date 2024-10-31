@@ -5,7 +5,7 @@ using UnityEngine;
 public class GameManager : Singleton<GameManager>
 {
     public PatrolArea patrolArea;
-
+    public AstarPath astarPath;
     public Vector3 RandomPatrolPosition()
     {
         return new Vector3(Random.Range(patrolArea.corners[0].position.x, patrolArea.corners[1].position.x),

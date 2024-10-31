@@ -90,10 +90,8 @@ public class Employee : Entity
     {
         GraphNode randomNode;
         // For grid graphs
-        var grid = AstarPath.active.data.gridGraph;
-        randomNode = grid.nodes[Random.Range(0, grid.nodes.Length)];
         // Use the center of the node as the destination for example
-        var destination1 = (Vector3)randomNode.position;
+        var destination1 = new Vector3(Random.Range(GameManager.Instance.patrolArea.corners[0].position.x, GameManager.Instance.patrolArea.corners[1].position.x), 0, Random.Range(GameManager.Instance.patrolArea.corners[0].position.z, GameManager.Instance.patrolArea.corners[1].position.z));
 
         UniTask task = SetTarget(destination1);
         yield return new WaitUntil(() => task.Status.IsCompleted());
