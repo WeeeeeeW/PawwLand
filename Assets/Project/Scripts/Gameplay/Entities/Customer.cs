@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using Pathfinding;
 using System.Collections;
 using System.Threading;
 using UnityEngine;
@@ -11,6 +12,9 @@ public class Customer : Entity
     public Pet pet;
     public bool Paying;
     public Transform PetHolder => base.PetHolder;
+
+    Coroutine _patrolCoroutine;
+    bool _isPatroling;
     protected override void Start()
     {
         base.Start();
@@ -56,8 +60,31 @@ public class Customer : Entity
         Leave(true);
     }
 
-    public override void Patrol()
+    public override void Patrol(Transform[] patrolArea)
     {
-        throw new System.NotImplementedException();
+        if (_isPatroling) return;
+        _isPatroling = true;
+        _patrolCoroutine = StartCoroutine(PatrolCoroutine(patrolArea));
+    }
+    private IEnumerator PatrolCoroutine(Transform[] patrolArea)
+    {
+        var destination1 = new Vector3(Random.Range(patrolArea[0].position.x, patrolArea[1].position.x), 0, Random.Range(patrolArea[0].position.z, patrolArea[1].position.z));
+
+        UniTask task = SetTarget(destination1);
+        yield return new WaitUntil(() => task.Status.IsCompleted());
+        yield return new WaitForSeconds(3f);
+        _isPatroling = false;
+        Patrol(patrolArea);
+        yield return null;
+    }
+
+    public override void OnEnterQueue()
+    {
+        if (_patrolCoroutine != null)
+        {
+            _isPatroling = false;
+            StopCoroutine(_patrolCoroutine);
+            //StopAllCoroutines();
+        }
     }
 }

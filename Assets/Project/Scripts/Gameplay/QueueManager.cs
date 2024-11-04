@@ -37,15 +37,20 @@ public class QueueManager
         {
             if (index < queuePositions.Count)
             {
+                entity.OnEnterQueue();
                 Vector3 targetQueuePosition = queuePositions[index].position;
                 entity.SetTarget(targetQueuePosition, queuePositions[index].rotation);
-                index++;
             }
+            else
+            {
+                entity.Patrol(GameManager.Instance.patrolArea.corners);
+            }
+            index++;
         }
     }
     public int GetQueueCount()
-    { 
-        return waitingQueue.Count; 
+    {
+        return waitingQueue.Count;
     }
     public bool HasWaitingEntities()
     {

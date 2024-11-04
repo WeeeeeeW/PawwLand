@@ -62,7 +62,9 @@ public abstract class Entity : MonoBehaviour
             await SetTarget(target);
         }
     }
-    public abstract void Patrol();
+    public abstract void Patrol(Transform[] patrolArea);
+
+    public abstract void OnEnterQueue();
     public async UniTask SetQueueTarget(Vector3 _target)
     {
         Agent.SetDestination(_target);

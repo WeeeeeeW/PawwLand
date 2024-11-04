@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Threading;
+using UnityEngine;
 
 public class Cashier : Entity
 {
@@ -21,7 +22,12 @@ public class Cashier : Entity
         await SetTarget(assignedCounter.CashierStand(), assignedCounter.CashierStand().rotation);
     }
 
-    public override void Patrol()
+    public override void Patrol(Transform[] patrolArea)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void OnEnterQueue()
     {
         throw new System.NotImplementedException();
     }
