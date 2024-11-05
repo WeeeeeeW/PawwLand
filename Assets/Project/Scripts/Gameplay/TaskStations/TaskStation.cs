@@ -16,6 +16,8 @@ public class TaskStation : MonoBehaviour
     private QueueManager queueManager;
     [SerializeField, FormerName("queuePos")] List<Transform> _queuePos;
     [SerializeField, FormerName("taskPos")] Transform _taskPos;
+    private int _level;
+    private float _taskDuration => TaskStationInfo.BaseDuration - level * .1f;
 
     [TitleGroup("UI")]
     [SerializeField] Transform infoPanel;
@@ -30,10 +32,12 @@ public class TaskStation : MonoBehaviour
     {
         queueManager = new QueueManager(_queuePos);
         stationNameTxt.text = TaskStationInfo.StationName;
-        taskDurationTxt.text = $"{TaskStationInfo.BaseDuration.ToString()}s";
+        taskDurationTxt.text = $"{_taskDuration.ToString()}s";
         upgradeBtn.onClick.AddListener(() =>
         {
             Debug.Log("Upgrade");
+            level++;
+            taskDurationTxt.text = $"{_taskDuration.ToString()}s";
         });
     }
 
@@ -59,8 +63,10 @@ public class TaskStation : MonoBehaviour
         _employee.DropOffPet();
         _currentPet.transform.parent = _taskPos;
         _currentPet.transform.localPosition = Vector3.zero;
-        _employee.ShowProgress(TaskStationInfo.BaseDuration);
-        await UniTask.WaitForSeconds(TaskStationInfo.BaseDuration);
+        _currentPet.transform.rotation = _taskPos.rotation;
+        Debug.Log(_taskPos.rotation);
+        _employee.ShowProgress(_taskDuration);
+        await UniTask.WaitForSeconds(_taskDuration);
         _employee.PickupPet(_employee.currentTask.pet);
         _employee.NextTask();
 
