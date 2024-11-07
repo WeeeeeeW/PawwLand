@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Pathfinding;
+using Sirenix.OdinInspector;
 using System.Collections;
 using UnityEngine;
 
@@ -7,8 +8,9 @@ public class Pet : MonoBehaviour
 {
     public PetType PetType;
     public Customer Owner;
+    [SerializeField] GameObject _petWaste;
 
-    private PetZone _currentZone = null;
+    [SerializeField] private PetZone _currentZone = null;
     public PetZone CurrentZone
     {
         set { _currentZone = value; }
@@ -64,5 +66,12 @@ public class Pet : MonoBehaviour
     {
         followerEntity.destination = target;
         await UniTask.WaitUntil(() => followerEntity.reachedDestination || followerEntity.reachedEndOfPath);
+    }
+
+    [Button]
+    void Test()
+    {
+        PetWaste waste = Instantiate(_petWaste, new Vector3(transform.position.x, 0, transform.position.z), transform.rotation).GetComponent<PetWaste>();
+        waste.CreateWaste(_currentZone.EmployeePickupPoint);
     }
 }

@@ -2,5 +2,6 @@ public enum ServiceType
 {
     None,
     Bath,
-    Grooming
+    Grooming,
+    Clean
 }

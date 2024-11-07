@@ -24,37 +24,49 @@ public class Employee : Entity
         base.Start();
         Patrol(GameManager.Instance.patrolArea.corners);
     }
-    public void TakeTask(IdleTask _task)
+    public async void TakeTask(IdleTask _task)
     {
         if(_patrolCoroutine != null)
             StopCoroutine(_patrolCoroutine);
         IsComplete = false;
         tasks = new Queue<IdleTask>();
-        switch (_task.serviceType)
+        switch (_task.ServiceType)
         {
             case ServiceType.Bath:
                 tasks.Enqueue(_task);
                 break;
             case ServiceType.Grooming:
-                tasks.Enqueue(new IdleTask(_task.customer, ServiceType.Bath, _task.pet));
+                tasks.Enqueue(new IdleTask(_task.Customer, ServiceType.Bath, _task.Pet));
+                tasks.Enqueue(_task);
+                break;
+            case ServiceType.Clean:
                 tasks.Enqueue(_task);
                 break;
 
         }
         currentTask = tasks.Dequeue();
-        TaskManager.Instance.petZones[currentTask.pet.PetType].AssignEmployeeToQueue(this);
+        if(currentTask.Pet != null)
+            TaskManager.Instance.petZones[currentTask.Pet.PetType].AssignEmployeeToQueue(this);
+        else
+        {
+            await SetTarget(currentTask.Target);
+            ShowProgress(2f);
+            await UniTask.WaitForSeconds(2f);
+            Destroy(currentTask.TaskObject);
+            FinishTask();
+        }
     }
 
     public void GoToExecuteTask()
     {
-        TaskManager.Instance.taskStations[currentTask.serviceType][0].AssignEmployeeToQueue(this);
+        TaskManager.Instance.taskStations[currentTask.ServiceType][0].AssignEmployeeToQueue(this);
     }
 
     public void ShowProgress(float _duration)
     {
         progressCanvas.gameObject.SetActive(true);
         progressFill.fillAmount = 0;
-        progressFill.DOFillAmount(1, _duration).OnComplete(() => progressCanvas.gameObject.SetActive(false));
+        progressFill.DOFillAmount(1, _duration).SetEase(Ease.Linear).OnComplete(() => progressCanvas.gameObject.SetActive(false));
     }
 
     public void NextTask()
@@ -62,7 +74,7 @@ public class Employee : Entity
         if (tasks.Count > 0)
         {
             currentTask = tasks.Dequeue();
-            TaskManager.Instance.taskStations[currentTask.serviceType][0].AssignEmployeeToQueue(this);
+            TaskManager.Instance.taskStations[currentTask.ServiceType][0].AssignEmployeeToQueue(this);
         }
         else
             ReturnPet();
@@ -70,7 +82,7 @@ public class Employee : Entity
     private void ReturnPet()
     {
         IsComplete = true;
-        TaskManager.Instance.petZones[currentTask.pet.PetType].AssignEmployeeToQueue(this);
+        TaskManager.Instance.petZones[currentTask.Pet.PetType].AssignEmployeeToQueue(this);
     }
 
     public void FinishTask()

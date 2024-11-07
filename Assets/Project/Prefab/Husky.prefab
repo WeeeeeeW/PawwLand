@@ -49,6 +49,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PetType: 0
   Owner: {fileID: 0}
+  _petWaste: {fileID: 8182697139023713974, guid: 090cec2e8b85f4c4daf2aac22cbb4f30, type: 3}
   destinationSetter: {fileID: 5100998431287610915}
 --- !u!114 &4712913732645134783
 MonoBehaviour:

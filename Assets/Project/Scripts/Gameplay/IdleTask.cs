@@ -2,25 +2,22 @@ using UnityEngine;
 
 public class IdleTask
 {
-    public Customer customer;
-    public ServiceType serviceType;
-    public Pet pet;
+    public Customer Customer;
+    public ServiceType ServiceType;
+    public Pet Pet;
+    public Transform Target;
+    public GameObject TaskObject;
 
     public IdleTask(Customer _customer, ServiceType _serviceType, Pet _pet)
     {
-        customer = _customer;
-        serviceType = _serviceType;
-        pet = _pet;
+        Customer = _customer;
+        ServiceType = _serviceType;
+        Pet = _pet;
     }
-    public void ExecuteTask(Employee employee)
+    public IdleTask(ServiceType _serviceType, Transform _target, GameObject _taskObject)
     {
-        // Employee has already arrived at the destination
-        //employee.PerformTask(this);
-    }
-
-    public void CompleteTask()
-    {
-        Debug.Log($"Task for {customer.customerName} ({serviceType}) completed.");
-        customer.Leave();
+        ServiceType = _serviceType;
+        Target = _target;
+        TaskObject = _taskObject;
     }
 }

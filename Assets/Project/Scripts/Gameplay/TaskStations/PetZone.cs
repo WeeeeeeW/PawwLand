@@ -39,8 +39,8 @@ public class PetZone : MonoBehaviour
         await UniTask.WaitForSeconds(taskDuration);
         if (!_employee.IsComplete)
         {
-            RemovePetFromZone(_employee.currentTask.pet);
-            _employee.PickupPet(_employee.currentTask.pet);
+            RemovePetFromZone(_employee.currentTask.Pet);
+            _employee.PickupPet(_employee.currentTask.Pet);
             _employee.GoToExecuteTask();
         }
         else
@@ -77,7 +77,7 @@ public class PetZone : MonoBehaviour
     public async UniTask ReceiveTask(IdleTask _idleTask)
     {
         await UniTask.WaitForSeconds(taskDuration);
-        AssignPetToZone(_idleTask.pet);
+        AssignPetToZone(_idleTask.Pet);
         TaskManager.Instance.CreateTask(_idleTask);
     }
 
